@@ -142,7 +142,7 @@ The authors modelled the neuron as
 
 + The network of such elements was the first model to tie the study of neural networks to the idea of computation in its modern sense.
 
-  <img src="C:\Users\ADMIN\AppData\Roaming\Typora\typora-user-images\image-20210907104222797.png" alt="image-20210907104222797"  />
+  <img src="images\image-20210907104222797.png" alt="image-20210907104222797"  />
 
 + The input values $a_i^t$ from the $i$-th presynaptic neuron at any instant t may be <span style="color:red">equal either to 0 or 1 only </span>
 
