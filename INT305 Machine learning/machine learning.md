@@ -113,7 +113,7 @@ Common strategy: represent the input as an input vector in $R^d$
 + **Representation** = mapping to another space that's easy to manipulate 
 + Vectors are a great representation since we can do linear algebra!
 
-![image-20210906173139003](images\image-20210906173139003.png)
+<img src="images\image-20210906173139003.png" alt="image-20210906173139003" />
 
 Mathematically, training set consists of a collection of pairs of an input vector $x\in R^d$ and its corresponding **target**, or **label**, $t$ 
 
@@ -149,16 +149,16 @@ $$
 
 We can visualize the behavior in the classification setting using a **Voronoi diagram**.
 
-![image-20210906194744348](images\image-20210906194744348.png)
+<img src="images\\image-20210906194744348.png" alt="image-20210906194744348" />
 
-![image-20210906194912474](images\image-20210906194912474.png)
+<img src="images\image-20210906194912474.png" alt="image-20210906194912474" />
 
 + Nearest neighbors **sensitive to noise or mis-labeled data** (“class noise”)
 + Smooth by having k nearest neighbors vote
 
 #### k-Nearest Neighbors
 
-![image-20210906195111261](images\image-20210906195111261.png)
+<img src="images\image-20210906195111261.png" alt="image-20210906195111261" />
 
 >**Algorithm:**
 >
@@ -203,12 +203,12 @@ We can visualize the behavior in the classification setting using a **Voronoi di
 + We can measure the generalization error (error rate on new examples) 
   using a **test set**.
 
-![image-20210906202105173](images\image-20210906202105173.png)
+<img src="images\image-20210906202105173.png" alt="image-20210906202105173"  />
 
 + $k$ is an example of a **hyperparameter**, something we can’t, fit as part of the learning algorithm itself 
 + We can tune hyperparameters using a **validation set**:
 
-![image-20210906202227254](images\image-20210906202227254.png)
+<img src="images\image-20210906202227254.png" alt="image-20210906202227254"  />
 
 + The test set is used only at the very end, to measure the generalization performance of the final configuration.
 
@@ -221,27 +221,27 @@ We can visualize the behavior in the classification setting using a **Voronoi di
 
 Therefore $O((\frac{1}{\epsilon})^d)$ balls are needed to cover the volume.
 
-![image-20210906202731235](images\image-20210906202731235.png)
+<img src="images\image-20210906202731235.png" alt="image-20210906202731235"  />
 
 + In high dimensions. "most" points are approximately the same distance. 
 + We can show this by applying the rules of expectation and covariance of random variables in surprising ways. 
 + Picture to keep in mind:
 
-![image-20210906202903453](images\image-20210906202903453.png)
+<img src="images\image-20210906202903453.png" alt="image-20210906202903453"  />
 
 + Saving grace: some datasets (e.g. images) may have low **intrinsic dimension**, i.e. lie on or near a low-dimensional manifold.
 
-![image-20210906203006640](images\image-20210906203006640.png)
+<img src="images\image-20210906203006640.png" alt="image-20210906203006640"  />
 
 + The neighborhood structure (and hence the Curse of Dimensionality) depends on the intrinsic dimension. 
 + The space of megapixel images is 3 million-dimensional. The true number of degrees of freedom is much smaller.
 
-![image-20210906203051252](images\image-20210906203051252.png)
+<img src="images\image-20210906203051252.png" alt="image-20210906203051252"  />
 
 + Nearest neighbors can be sensitive to the ranges of different features. 
 + Often, the units are arbitrary:
 
-![image-20210906203126229](images\image-20210906203126229.png)
+<img src="images\image-20210906203126229.png" alt="image-20210906203126229"  />
 
 + Simple fix: **normalize** each dimension to be zero mean and unit variance. I.e., compute the mean $\mu_j$ and standard deviation $\sigma_j$)，and take
   $$
@@ -268,7 +268,7 @@ Therefore $O((\frac{1}{\epsilon})^d)$ balls are needed to cover the volume.
 + Achieved $0.63\%$ error on MNIST, compared with $3\%$ for Euclidean KNN. 
 + Competitive with conv nets at the time, but required careful engineering.
 
-![image-20210906204157608](images\image-20210906204157608.png)
+<img src="images\image-20210906204157608.png" alt="image-20210906204157608"  />
 
 ### Conclusion
 
