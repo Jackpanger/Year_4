@@ -4,7 +4,7 @@
 
 ### **Contents**
 
-> [Nearest Neighbor](#anchor1) 
+> [Nearest Neighbor](#Nearest Neighbor) (all)
 
 1. *Coursework 1 : 15%* 
 

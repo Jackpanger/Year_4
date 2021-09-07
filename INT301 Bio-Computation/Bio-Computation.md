@@ -4,7 +4,7 @@
 
 ### Content
 
->[Abstract neuron](#Abstract neuron)
+>[Biological Neural Networks Overview](#Biological Neural Networks Overview): [Abstract neuron](#Abstract neuron)
 
 **Important test time:**
 
@@ -82,7 +82,7 @@
 
 + In a biological system, learning involves adjustments to the synaptic connections between neurons 
   + same for artificial neural network (ANN)
-+ Neural networks are configured for specific applications, such as **prediction** or forecasting, pattern recognition or data classification, through a **learning process** 
++ Neural networks are configured for specific applications, such as <span style="color:blue">**prediction**</span> or forecasting, <span style="color:blue">**pattern recognition**</span> or data classification, through a <span style="color:red">**learning process** </span>
 
 #### What is Machine Learning
 
@@ -139,19 +139,19 @@ The authors modelled the neuron as
 
 + A binary discrete-time element; 
 
-+ With **excitatory** and **inhibitory** inputs and an excitation threshold; 
++ With <span style="color:blue">**excitatory**</span> and <span style="color:blue">**inhibitory**</span> inputs and an excitation threshold; 
 
 + The network of such elements was the first model to tie the study of neural networks to the idea of computation in its modern sense.
 
   <img src="images\image-20210907104222797.png" alt="image-20210907104222797"  />
 
-+ The input values $a_i^t$ from the $i$-th presynaptic neuron at any instant t may be <span style="color:red">**equal either to 0 or 1 only** </span>
++ The input values $a_i^t$ from the $i$-th presynaptic neuron at any instant $t$ may be <span style="color:red">**equal either to 0 or 1 only** </span>
 
 + The weights of connections $w_i$ are <span style="color:red">**+1**</span> for <span style="color:red">**excitatory**</span> type connection and <span style="color:blue">**-1**</span> for <span style="color:blue">**inhibitory**</span> type connection 
 
 + There is an excitation threshold $\theta$ associated with the neuron.
 
-+ Output x t+1 of the neuron at the following instant t+1 is defined according to the rule
++ Output $x^{t+1}$ of the neuron at the following instant $t+1$ is defined according to the rule
   $$
   x^{t+1} =1 \,\mbox{ if and only if } \,S^t = \sum_i w_ia_i^t \geq \theta
   $$
@@ -159,7 +159,7 @@ The authors modelled the neuron as
 
 + In the MP neuron, we shall call the instant total input $S_t$ - <span style="color:red">**instant state of the neuron**</span>
 
-+ The state $S^t$ of the MP neuron does not depend on the previous state of the neuron itself, but is simply 
++ The <span style="color:red">**state**</span> $S^t$ of the MP neuron does not depend on the previous state of the neuron itself, but is simply 
 
 + The <span style="color:blue">**neuron output**</span> $x^{t+1}$ is function of its state $S^t$, therefore the output also can be written as function of discrete time 
   $$
@@ -172,6 +172,10 @@ The authors modelled the neuron as
 + The neuron output $x^{t+1}$ can be written as 
   $$
   x(t)=g(S^t) =g( f (t))
+  $$
+  <Span style="color:rgb(130,50,150)">***PN: which means* **</span>
+  $$
+  x^{t+1} = x(t)=g(S^t) =g( f (t))
   $$
   where $g$ is the <span style="color:blue">**threshold activation function**</span>
   $$ {math}
