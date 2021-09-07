@@ -20,7 +20,7 @@
 
 #### **What is machine learning**
 
-![image-20210906165229750](images\image-20210906165229750.png)
+<img src="images\image-20210906165229750.png" alt="image-20210906165229750"  />
 
 #### Relations to AI
 
