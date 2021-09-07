@@ -173,11 +173,11 @@ We can visualize the behavior in the classification setting using a **Voronoi di
 
 **$k=1$**
 
-<img src="images\image-20210906200944380.png" alt="image-20210906200944380" style="zoom:67%;" />
+<img src="images\image-20210906200944380.png" alt="image-20210906200944380" style="zoom: 50%;" />
 
 **$k=15$**
 
-<img src="images\image-20210906201006702.png" alt="image-20210906201006702" style="zoom:67%;" />
+<img src="images\image-20210906201006702.png" alt="image-20210906201006702" style="zoom: 50%;" />
 
 **Tradeoffs in choosing $k$?** 
 
@@ -203,12 +203,12 @@ We can visualize the behavior in the classification setting using a **Voronoi di
 + We can measure the generalization error (error rate on new examples) 
   using a **test set**.
 
-<img src="images\image-20210906202105173.png" alt="image-20210906202105173"  />
+<img src="images\image-20210906202105173.png" alt="image-20210906202105173" style="zoom:80%;" />
 
 + $k$ is an example of a **hyperparameter**, something we can’t, fit as part of the learning algorithm itself 
 + We can tune hyperparameters using a **validation set**:
 
-<img src="images\image-20210906202227254.png" alt="image-20210906202227254"  />
+<img src="images\image-20210906202227254.png" alt="image-20210906202227254" style="zoom:80%;" />
 
 + The test set is used only at the very end, to measure the generalization performance of the final configuration.
 
@@ -236,7 +236,7 @@ Therefore $O((\frac{1}{\epsilon})^d)$ balls are needed to cover the volume.
 + The neighborhood structure (and hence the Curse of Dimensionality) depends on the intrinsic dimension. 
 + The space of megapixel images is 3 million-dimensional. The true number of degrees of freedom is much smaller.
 
-<img src="images\image-20210906203051252.png" alt="image-20210906203051252"  />
+<img src="images\image-20210906203051252.png" alt="image-20210906203051252" style="zoom:150%;" />
 
 + Nearest neighbors can be sensitive to the ranges of different features. 
 + Often, the units are arbitrary:
