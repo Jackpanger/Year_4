@@ -44,24 +44,24 @@
 
 **DL (Deep Learning) **- subset of ML which makes the computation of multi-layer neural network feasible
 
-#### ANN (Artificial neural networks) : a brief history
+#### ANN (Artificial neural networks) : a brief history [ignored]
 
 #### Biological Neural Network Approach
 
-+  Human brain is an intelligent system. By studying how the brain works we can learn what intelligence is and what properties of the brain are essential for any intelligent system. 
++ Human brain is an intelligent system. By studying how the brain works we can learn what intelligence is and what properties of the brain are essential for any intelligent system. 
 
-+ Other essential attributes include that memory is primarily a sequences of patterns, that behavior is an essential part of all learning, and that learning must be continuous. 
++ Other essential attributes include that <span style="color:red">**memory**</span> is primarily a sequences of patterns, that behavior is an essential part of all learning, and that learning must be continuous. 
 
 + In addition, biological neurons are far more sophisticated than the simple neurons used in the simple neural network approach. 
 
 ### Biological Neural Networks Overview
 
-+ The inner-workings of the human brain are often modeled around the concept of neurons and the networks of neurons known as biological neural networks
++ The inner-workings of the human brain are often modeled around the concept of neurons and the networks of <span style="color:red">**neurons**</span> known as <span style="color:red">**biological neural networks**</span>
   + It’s estimated that the human brain contains roughly 100 billion neurons, which are connected along pathways throughout these networks.
 
 <img src="images\image-20210907101849632.png" alt="image-20210907101849632" style="zoom:67%;" />
 
-+ At a very high level, neurons communicate with one another through an interface consisting of **axon terminals** that are connected to **dendrites** across a gap (**synapse**)
++ At a very high level, neurons communicate with one another through an interface consisting of <span style="color:red">**axon terminals**</span> that are connected to <span style="color:red">**dendrites**</span> across a gap (<span style="color:red">**synapse**</span>)
 
 #### Abstract neuron
 
@@ -75,8 +75,8 @@
 + Neural networks are mathematical models inspired by the human brain. 
 
 + Neural networks, and machine learning in general, engage in two different phases. 
-  + First is the **learning phase**, where the model trains to perform a specific task. It could be learning how to describe photos to the blind or how to do language translations. 
-  + The second phase is the **application phase**, where the finished model is used. 
+  + First is the <span style="color:red">**learning phase**</span>, where the model trains to perform a specific task. It could be learning how to describe photos to the blind or how to do language translations. 
+  + The second phase is the <span style="color:red">**application phase**</span>, where the finished model is used. 
 
 #### Neural Network
 
@@ -88,8 +88,9 @@
 
 + Webster's definition of "**to learn**" "To gain **knowledge** or **understanding** of, or **skill** in **by study**, **instruction** or **experience**" 
 + Simon's definition of "**machine learning**" "Learning denotes **changes** in the system that are **adaptive** in the sense that they enable the system to do the same task or tasks drawn from the same population **more effectively the next time**" -- Machine Learning I, 1993, Chapter 2. 
-+ <span style="color:red">Machine learning:</span> programming computers to <span style="color:green">optimize a performance criterion using example data</span> or past experience.  There is no need to “learn” to calculate payroll
-+ <span style="color:red">Learning is used when: </span>
++ <span style="color:red">**Machine learning**:</span> programming computers to <span style="color:green">**optimize a performance criterion using example data**</span> or past experience. 
+  + There is no need to "learn" to calculate payroll
++ <span style="color:red">**Learning is used when**: </span>
   + Human expertise does not exist (e.g.,navigating on Mars), 
   + Humans are unable to explain their expertise (e.g., speech recognition) 
   + Solution changes in time (e.g., forecasting stock market) 
@@ -144,9 +145,9 @@ The authors modelled the neuron as
 
   <img src="images\image-20210907104222797.png" alt="image-20210907104222797"  />
 
-+ The input values $a_i^t$ from the $i$-th presynaptic neuron at any instant t may be <span style="color:red">equal either to 0 or 1 only </span>
++ The input values $a_i^t$ from the $i$-th presynaptic neuron at any instant t may be <span style="color:red">**equal either to 0 or 1 only** </span>
 
-+ The weights of connections $w_i$ are <span style="color:red">+1</span> for <span style="color:red">excitatory</span> type connection and <span style="color:blue">-1</span> for <span style="color:blue">inhibitory</span> type connection 
++ The weights of connections $w_i$ are <span style="color:red">**+1**</span> for <span style="color:red">**excitatory**</span> type connection and <span style="color:blue">**-1**</span> for <span style="color:blue">**inhibitory**</span> type connection 
 
 + There is an excitation threshold $\theta$ associated with the neuron.
 
@@ -156,11 +157,11 @@ The authors modelled the neuron as
   $$
   
 
-+ In the MP neuron, we shall call the instant total input $S_t$ - <span style="color:red">instant state of the neuron</span>
++ In the MP neuron, we shall call the instant total input $S_t$ - <span style="color:red">**instant state of the neuron**</span>
 
 + The state $S^t$ of the MP neuron does not depend on the previous state of the neuron itself, but is simply 
 
-+ The <span style="color:blue">neuron output</span> $x^{t+1}$ is function of its state $S^t$, therefore the output also can be written as function of discrete time 
++ The <span style="color:blue">**neuron output**</span> $x^{t+1}$ is function of its state $S^t$, therefore the output also can be written as function of discrete time 
   $$
   x(t)=g(S^t) =g( f (t))
   $$
@@ -172,7 +173,7 @@ The authors modelled the neuron as
   $$
   x(t)=g(S^t) =g( f (t))
   $$
-  where $g$ is the <span style="color:blue">threshold activation function</span>
+  where $g$ is the <span style="color:blue">**threshold activation function**</span>
   $$ {math}
   g(S^t) = H(S^t-\theta) = 
   \begin{cases} 
@@ -188,7 +189,7 @@ The authors modelled the neuron as
   \end{cases}
   $$
 
-<images\image-20210907105042875.png" alt="image-20210907105042875"  />
+<img src="images\image-20210907105042875.png" alt="image-20210907105042875"  />
 
 #### MP-neuron vs brain function
 
@@ -196,7 +197,7 @@ The authors modelled the neuron as
   + storing information and 
   + producing logical and arithmetical operations 
 + The next step is to realize another important function of the brain, which is 
-  + to acquire <span style="color:red">new knowledge</span> through experience, i.e., <span style="color:red">learning</span>
+  + to acquire <span style="color:red">**new knowledge**</span> through experience, i.e., <span style="color:red">**learning**</span>
 + These correspond to the main functions of the brain 
   + to store knowledge, and 
   + to apply the knowledge stored to solve problems
