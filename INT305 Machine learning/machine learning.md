@@ -133,7 +133,7 @@ Mathematically, training set consists of a collection of pairs of an input vecto
 + Can formalize "nearest" in terms of Euclidean distance
 
 $$
-||x^{(a)}-x^{(b)}||_2 = \sqrt(\sum_{j=1}^d(x_j^{(a)}-x_j^{(b)})^2)
+||x^{(a)}-x^{(b)}||_2 = \sqrt{\sum_{j=1}^d(x_j^{(a)}-x_j^{(b)})^2}
 $$
 
 > **Algorithm:**
@@ -194,16 +194,23 @@ We can visualize the behavior in the classification setting using a **Voronoi di
 > **Balancing $ k $**
 >
 > + Optimal choice of k depends on number of data points $n$. 
+>
 > + Nice theoretic al properties if $k\to\infty$ and $\frac{k}{n}\to0 $
+>
+>   <Span style="color:rgb(130,50,150)">***PN: which means make k as much as large and $\frac{k}{n}$ still tends to 0*  **</span>
+>
 > + Rule of thumb: choose $k < \sqrt{n}$
+>
 > + We can choose k using validation set (next slides)・
 
 + We would like our algorithm to **generalize** to data it hasn't seen before. 
 
 + We can measure the generalization error (error rate on new examples) 
   using a **test set**.
+  
+  <Span style="color:rgb(130,50,150)">***PN: choose the k at the point of lowest error rate in test set* **</span>
 
-<img src="images\image-20210906202105173.png" alt="image-20210906202105173" style="zoom:80%;" />
+<img src="images\image-20210906202105173.png" alt="image-20210906202105173" style="zoom: 200%;" />
 
 + $k$ is an example of a **hyperparameter**, something we can’t, fit as part of the learning algorithm itself 
 + We can tune hyperparameters using a **validation set**:
@@ -221,6 +228,12 @@ We can visualize the behavior in the classification setting using a **Voronoi di
 
 Therefore $O((\frac{1}{\epsilon})^d)$ balls are needed to cover the volume.
 
+<Span style="color:rgb(130,50,150)">***PN: which means* **</span>
+
+1. <Span style="color:rgb(130,50,150)">***Assuming demension is d, there needs $O((\frac{1}{\epsilon})^d)$ balls to cover the total volume(given it is the unit 1). $\epsilon<1$, the number is increasing when d goes up.* **</span>
+2. <Span style="color:rgb(130,50,150)">***as d goes up, the ratio of the volume of a ball to the total volumn goes down. To obtain a same ratio, $\epsilon$ should be larger to get more point.* **</span>
+3. <Span style="color:rgb(130,50,150)">***Hence, we can see in the right image, when d goes to 10, in same fraction of Volumn, d=10 got the highest distance. Namely, in high dimensions, most points are far apart.* **</span>
+
 <img src="images\image-20210906202731235.png" alt="image-20210906202731235"  />
 
 + In high dimensions. "most" points are approximately the same distance. 
@@ -230,6 +243,8 @@ Therefore $O((\frac{1}{\epsilon})^d)$ balls are needed to cover the volume.
 <img src="images\image-20210906202903453.png" alt="image-20210906202903453"  />
 
 + Saving grace: some datasets (e.g. images) may have low **intrinsic dimension**, i.e. lie on or near a low-dimensional manifold.
+
+  <Span style="color:rgb(130,50,150)">***PN: which means the number of features required to approximate it.* **</span>
 
 <img src="images\image-20210906203006640.png" alt="image-20210906203006640"  />
 
