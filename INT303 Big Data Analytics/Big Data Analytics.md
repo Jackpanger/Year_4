@@ -23,4 +23,4 @@
 
 #### Nothing important
 
-No need for watching recording or PPT
+No need for watching recording or PPT for this week
