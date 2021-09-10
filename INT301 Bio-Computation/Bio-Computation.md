@@ -117,7 +117,11 @@
 
 ### Content
 
-> TBD
+> [The McCulloch-Pitts Neuron](#The McCulloch-Pitts Neuron")
+>
+> [Activation function](#Activation function)
+>
+> [Hebb’s Rule](#Hebb’s Rule): [Hebb’s rule in practice](#Hebb’s rule in practice)
 
 #### Abstract model of a neuron
 
@@ -133,9 +137,9 @@ $$
 S = \sum_i^n w_{ji}x_i
 $$
 
-#### The McCulloch-Pitts Neuron (1943)
+#### The McCulloch-Pitts Neuron
 
-The authors modelled the neuron as 
+ (1943) The authors modelled the neuron as 
 
 + A binary discrete-time element; 
 
@@ -156,7 +160,6 @@ The authors modelled the neuron as
   x^{t+1} =1 \,\mbox{ if and only if } \,S^t = \sum_i w_ia_i^t \geq \theta
   $$
   
-
 + In the MP neuron, we shall call the instant total input $S_t$ - <span style="color:red">**instant state of the neuron**</span>
 
 + The <span style="color:red">**state**</span> $S^t$ of the MP neuron does not depend on the previous state of the neuron itself, but is simply 
@@ -205,3 +208,125 @@ The authors modelled the neuron as
 + These correspond to the main functions of the brain 
   + to store knowledge, and 
   + to apply the knowledge stored to solve problems
+
+### ANN learning rules
+
+<span style="color:red">**Learning**</span> means <span style="border-bottom:1px solid;">to change in response to experience.</span>
+
+In a network of MP-neurons, binary weights of  connections and thresholds are fixed. The only change can be the change of pattern of connections,  which is technically expensive.
+
+=> <span style="color:red">**Some easily changeable free parameters are needed.**</span>
+
+<img src="images\image-20210910134126042.png" alt="image-20210910134126042"  />
+$$
+S_j = \sum_{i=0}^n w_{ji}a_i\\
+x_j = \begin{cases}
+0 \text{ if } s_j\leq0\\
+1 \text{ if } s_j > 0
+\end{cases}
+$$
+
++ <span style="color:blue">**The ideal free parameters to adjust**</span>, and so to  resolve learning without changing patterns of  connections, are the <span style="color:blue">**weights of connections $w_{ji}$**</span>
+
+#### Definition:
+
++ <span style="color:red">**ANN learning rule**</span>: how to adjust the  weights of connections to get desirable output. 
+
++ Much work in artificial neural networks focuses on  the learning rules that define
+
+  > <span style="color:blue">**how to change the weights of connections  between neurons to better adapt a network  to serve some overall function.**</span>
+
++ For the first time the problem was formulated in  1940s 
+
+  > When experimental neuroscience was limited, the  classic definitions of these learning rules came not  from biology, but from *psychological studies* of **Donald Hebb** and **Frank Rosenblatt** 
+
++ Hebb proposed that 
+
+  > a particular type of <span style="color:red">use-dependent modification</span> of the connection strength of synapses might  underlie learning in the nervous system
+
+#### Hebb’s Rule
+
++ (1949) Hebb proposed a <span style="color:blue">**neurophysiological postulate:**</span>
+
+  > <span style="color:red">**" …when an axon of a cell A  **</span>
+  >
+  > + <span style="color:red">**is near enough to excite a cell B and **</span>
+  > + <span style="color:red">**repeatedly and persistently takes part in firing it **</span>
+  >
+  > <span style="color:red">**some growth process or metabolic change takes  place in one or both cells such that A’s efficiency as one of the cells firing B,  is increased."**</span>
+
++ The simplest formalization of Hebb’s rule is <span style="color:red">**to increase weight of connection  at every next instant in the way:**</span>
+  $$
+  w_{ji}^{k+1} = w_{ji}^k +\Delta w_{ji}^k\\
+  \text{where } \Delta w_{ji}^k=Ca_i^kx_j^k 
+  $$
+  here
+
+  + $w_{ji}^ k$ is the weight of connection at instant $k $
+  + $w_{ji}^ k+1$ is the weight of connection at the following instant $k+1 $
+  + $w_{ji}^ k$  is increment by which the weight of connection is  enlarged  
+  + $C$ is positive coefficient which determines learning rate 
+  + $a_i^k$ is input value from the presynaptic neuron at instant $k $
+  + $x_j^k$ is output of the postsynaptic neuron at the same instant $k$
+
++ Thus the weight of connection changes at the next  instant only if both preceding input via this  connection and the resulting output  simultaneously are not equal to 0
++ Equations emphasize the <span style="color:red">**correlation**</span>  <span style="color:red">nature of a Hebbian synapse</span>
+
++ Hebb’s original learning rule 
+  + referred exclusively to excitatory synapses, and  
+  + has the <span style="border-bottom:1px solid;">unfortunate property</span> that it can only  increase synaptic weights, thus washing out the  distinctive performance of different neurons in a  network, as the connections drive into  saturation ...
+
++ However, when the Hebbian rule is augmented by a  formalization rule, e.g., keep constant the total strength of  synapses upon a given neuron, it tends to “sharpen” a  neuron’s predisposition “without a teacher”, causing its  firing to become better correlated with a cluster of  stimulus patterns. 
++ For this reason, Hebb's rule plays an important role in  studies of many ANN algorithms, such as unsupervised  learning or self-organization, which we will study later.
+
+#### Hebb’s rule in practice
+
+**Input unit** 
+
+<img src="images\image-20210910113615207.png" alt="image-20210910113615207" style="zoom:80%;" />
+
+**Input unit** 
+
+<img src="images\image-20210910113737442.png" alt="image-20210910113737442" style="zoom:80%;" />
+
+**Input unit** 
+
+<img src="images\image-20210910113809177.png" alt="image-20210910113809177" style="zoom:80%;" />
+
+**Input unit**
+
+<img src="images\image-20210910113859520.png" alt="image-20210910113859520" style="zoom:80%;" />
+
+**Input unit**
+
+<img src="images\image-20210910114049883.png" alt="image-20210910114049883" style="zoom:80%;" />
+
+**Input unit**
+
+<img src="images\image-20210910114213034.png" alt="image-20210910114213034" style="zoom:80%;" />
+
+**Input unit** 
+
+<img src="images\image-20210910114240377.png" alt="image-20210910114240377" style="zoom:80%;" />
+
+**Input unit** 
+
+<img src="images\image-20210910114302602.png" alt="image-20210910114302602" style="zoom:80%;" />
+
+**Input unit** 
+
+<img src="images\image-20210910114331930.png" alt="image-20210910114331930" style="zoom:80%;" />
+
+**Input unit** 
+
+<img src="images\image-20210910133151581.png" alt="image-20210910133151581" style="zoom:80%;" />
+
+**Input unit** 
+
+<img src="images\image-20210910133235332.png" alt="image-20210910133235332" style="zoom:80%;" />
+
+**Input unit** 
+
+<img src="images\image-20210910133306227.png" alt="image-20210910133306227" style="zoom:80%;" />
+
+ss
