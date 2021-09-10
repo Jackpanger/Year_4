@@ -1,13 +1,5 @@
 # Bio-Computation
 
-## Lecture 0
-
-### Content
-
->[Biological Neural Networks Overview](#Biological Neural Networks Overview): [Abstract neuron](#Abstract neuron)
-
-**Important test time:**
-
 >Assessment 1 
 >
 >+ week 8
@@ -24,6 +16,12 @@
 >
 >+ 2 hour
 >+ One-page open book (probably)
+
+## Lecture 0
+
+### Content
+
+>[Biological Neural Networks Overview](#Biological Neural Networks Overview): [Abstract neuron](#Abstract neuron)
 
 #### Bio-computation
 

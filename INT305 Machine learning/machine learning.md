@@ -1,22 +1,22 @@
 # Machine Learning 
 
-## Lecture 1 
-
-### **Contents**
-
-> [Nearest Neighbor](#Nearest Neighbor) (all)
-
 1. *Coursework 1 : 15%* 
 
    *○ The coursework requires no lab practice.* 
 
 2. *Coursework 2 : 15%*
 
-    *○ This coursework requires lab practice.*
+   *○ This coursework requires lab practice.*
 
 3. *Final Exam : 70%* 
 
    *○ Final Exam is the most important part for assessment. It will be a open  book exam.* 
+
+## Lecture 1 
+
+### **Contents**
+
+> [Nearest Neighbor](#Nearest Neighbor) (all)
 
 #### **What is machine learning**
 
