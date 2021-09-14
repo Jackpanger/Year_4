@@ -327,3 +327,365 @@ $$
 
 <img src="images\image-20210910133306227.png" alt="image-20210910133306227" style="zoom:80%;" />
 
+## Lecture 2
+
+**Supervised learning model: Perceptron**
+
+### Content
+
+>
+
+### Recall: Machine learning and ANN
+
++ Like human learning from past experiences. 
++ A computer does not have “experiences”. 
++ <span style="color:blue">**A computer system learns from data**</span>, which represent some “past experiences” of an application domain. 
++ <span style="color:red">**Our focus**</span>: learn <span style="color:blue">**a target function**</span> that can be used to predict the values of a discrete class attribute, e.g., <span style="color:blue">**yes**</span> or <span style="color:blue">**no**</span>, and <span style="color:blue">**high**</span> or <span style="color:blue">**low**</span>. 
++ The task is commonly called: <span style="color:red">**supervised learning**</span>.
+
+### The data and the goal
+
++ <span style="color:red">**Data:**</span> A set of data records (also called examples, instances or cases) described by 
+  + <span style="color:blue">**k attributes**</span>: $A_1, A_2,...A_k$. 
+  + <span style="color:blue">**a class**</span>: Each example is labelled with a predefined class.
++ <span style="color:red">**Data:**</span> To learn a <span style="color:blue">**classification model**</span> from the data that can be used to predict the classes of new (future, or test) cases/instances.
+
+#### An example: data (loan application)
+
+<span style="color:red">**Approve or not**</span>
+
+<img src="images\image-20210914091611497.png" alt="image-20210914091611497" style="zoom:80%;" />
+
+#### An example: the learning task
+
++ <span style="color:red">**Learn a classification model from the data**</span> from the data
++ Use the model to classify future loan applications into
+  + <span style="color:blue">**Yes (approve)** and</span> 
+  + <span style="color:blue">**No (disapprove)**</span>
+
++ What is the class for following case/instance?
+
+  <img src="images\image-20210914091906607.png" alt="image-20210914091906607" style="zoom:80%;" />
+
+### Supervised vs. unsupervised Learning
+
++ <span style="color:red">**Supervised learning**</span>: classification is seen as supervised learning from examples. 
+  + <span style="color:blue">**Supervision**</span>: The data (observations, measurements, etc.) are labeled with predefined classes. It is like that a “teacher” gives the classes (<span style="color:blue">**supervision**</span>). 
+  + Test data are classified into these classes too. 
++ <span style="color:red">**Unsupervised learning** (e.g. clustering)</span> 
+  + <span style="color:blue">**Class labels of the data are unknown**</span> 
+  + Given a set of data, the task is to establish the existence of classes or clusters in the data
+
+#### Supervised learning process: two steps
+
++ <span style="color:red">**Learning (training)**</span>: Learn a model using the <span style="color:blue">**Learning (training)**</span>
+
++ <span style="color:red">**Testing**:</span> Test the model using <span style="color:blue">**unseen test data**</span> to assess the model accuracy
+  $$
+  \begin{align*}
+  Accuracy=\frac{\text{Number of correct classifications}}{\text{Total number of test cases}}.
+  \end{align*}
+  $$
+  <img src="images\image-20210914092505874.png" alt="image-20210914092505874" style="zoom:80%;" />
+
+#### What do we mean by learning?
+
++ <span style="color:red">**Given**</span> 
+
+  + <span style="color:blue">**a data set D**</span> 
+  + <span style="color:blue">**a task T**</span> 
+  + **<span style="color:blue">a performance measure M</span>**
+
+  a computer system is said to <span style="color:red">**learn**</span> from D to perform the task T if after learning the system’s performance on T improves as measured by M. 
+
++ In other words, the learned model helps the system to perform T better as <span style="color:blue">**compared to no learning**</span>.
+
+##### Fundamental assumption of learning
+
+> <span style="color:red">**Assumption**</span>: The distribution of training examples is <span style="color:blue">**identical**</span> to the distribution of test examples (including future unseen examples).
+
++ In practice, this assumption is often violated to certain degree. 
++ Strong violations will clearly result in poor classification accuracy. 
++ <span style="color:blue">**To achieve good accuracy on the test data, training examples must be sufficiently representative of the test data.**</span>
+
+### Perceptron (1958)
+
++ Rosenblatt (1958) explicitly considered the problem of <span style="color:red">**pattern recognition**</span>, where a “teacher” is essential. 
++ Perceptrons are neural networks that change with “experience” using <span style="color:red">**error-correcting rule**</span>. 
++ According to the rule, <span style="color:blue">**weight of a response unit changes when it makes erroneous response to stimuli presented to the network**</span>.
+
+#### ANN for Pattern Recognition
+
++ <span style="color:rgb(0,112,192)">**Training data**</span>: set of sample pairs $(x, y)$. 
+
++ Network (model, classifier) **<span style="color:red">adjusts its connection weights</span> <span style="color:blue">according to the errors</span>** between target and network output
+
+  <img src="images\image-20210914093643692.png" alt="image-20210914093643692" style="zoom:80%;" />
+
+  **Supervised learning** is mainly applied in classification/prediction. 
+
+#### Perceptron (1958)
+
++ The simplest architecture of perceptron comprises two layers of idealized “neurons”, which we shall call <span style="color:blue">***"units" of the network***</span>
+
+  <img src="images\image-20210914094058954.png" alt="image-20210914094058954"  />
+
++ There are
+
+  + one layer of input units, and 
+  + one layer of output units
+
+  in the perceptron
+
++ The two layers are fully interconnected, i.e., every input unit is connected to every output unit
++ Thus, <span style="color:blue">***processing elements***</span> of the perceptron are the <span style="color:rgb(51,51,153)">***abstract neurons***</span>
++ Each processing element has the same input comprising total input layer, but individual outputs with individual connections and therefore different weights of connections.
+
+The total input to the output unit $j$ is
+$$
+\begin{align*}
+S_j = \sum_{i=0}^nw_{ji}a_i
+\end{align*}
+$$
+$a_i$: input value from the $i$-th input unit
+
+$w_{ji}$: the weight of connection btw $i$-th input and $j$-th output units
+
++ The sum is taken <span style="color:red">**over all n+1**</span> inputs units connected to the output unit <span style="color:red">**$j$**</span>. 
++ There is special <span style="color:red">**bias input**</span> unit <span style="color:red">**number 0**</span> in the input layer
+
++ The bias unit always produces inputs $a_0$ of the fixed values of +1. 
++ The input $a_0$ of <span style="color:red">**bias unit**</span> functions as a constant value in the sum. 
++ The <span style="color:red">**bias unit connection**</span> to output unit $j$ has a weight $w_{j0}$ adjusted in the same way as all the other weights 
+
++ The output value of $X_j$ the output unit $j$ depends on whether the weighted sum is above or below the unit's threshold value.
+
++ $X_j$ is defined by the unit's threshold activation function.
+  $$
+  \begin{align*}
+  X_j =f(S_j)=
+  \begin{cases}
+  1, S_j\geq\theta_j\\
+  0,S_j<\theta_j
+  \end{cases}
+  \end{align*}
+  $$
+
+**Definition:** 
+
+the ordered set of instant outputs of all units in the output layer $X=\{X_0,X_1,...,X_n\}$ constitutes an <span style="color:red">**output vector**</span> of the network
+
++ The instant output $X_j$ of the $j$-th unit in the output layer constitutes the $j$-th component of the output vector.
++ <span style="color:blue">**Weight $w_{ji}$**</span> of connections between the two layers <span style="color:blue">**are changed**</span> according to <span style="color:red">**perceptron learning rule**</span>, so the network is more likely to produce the desired output in response to certain inputs.
++ **<span style="color:rgb(0,128,0)">The process of weights adjustment is called</span> <span style="color:red">perceptron learning</span> <span style="color:rgb(0,128,0)">(or training)</span>.**
+
+#### Perceptron Training
+
+Every processing element computes an output according its state and threshold:
+$$
+\begin{align*}
+S_j = \sum_{i=0}^nw_{ji}a_i \to X_j =f(S_j)=
+\begin{cases}
+1, S_j\geq\theta_j\\
+0,S_j<\theta_j
+\end{cases} \to e_j=(t_j-X_j)
+\end{align*}
+$$
+The network instant outputs $X_j$ are then compared to the desired outputs specified in the training set.
+
+> <span style="color:blue">**The error of an output unit is the difference between the target output and the instant one.**</span>
+
+> <span style="color:blue">**The error are computed and used to re-adjust the values of the weights of connections.**</span>
+
+**<span style="color:rgb(25,25,78)">The weights re-adjustment is done in such a way that the network is – on the whole – more likely to give the desired response next time.</span>**
+
+##### Perceptron Updating of the Weights
+
+The goal of the training session is to arrive at a single set of weights that allow each of the mappings in the training set to be done successfully by the network.
+
+1. Compute <span style="color:rgb(255,0,102)">**error**</span> of every output unit
+   $$
+   \begin{align*}
+   e_j=(t_j-X_j)
+   \end{align*}
+   $$
+   where $t_j$ is the target value for output unit $j$ 
+
+   $X_j$ is the instant output produced by output unit $j$
+
+Having the errors computed, 
+
+ 2. Update the weights
+    $$
+    \begin{align*}
+    w_ji = w_ji+\triangle w_{ji}
+    \end{align*}
+    $$
+    where  (**<span style="color:blue">Perceptron learning rule</span>**)
+    $$
+    \begin{align*}
+    \triangle w_{ji} =Ce_ja_i=C(t_j-X_j)a_i
+    \end{align*}
+    $$
+
++ A sequential learning procedure for updating the weights. 
+
++ Perceptron training algorithm (<span style="color:red">**delta rule**</span>)
+
+  <img src="images\image-20210914101119552.png" alt="image-20210914101119552" style="zoom:80%;" />
+
+##### Example
+
++ Define our “features”:
+
+  | Taste | Sweet = 1, Not_Sweet = 0   |
+  | ----- | -------------------------- |
+  | Seeds | Edible = 1, Not_Edible = 0 |
+  | Skin  | Edible = 1, Not_Edible = 0 |
+
+  For output:
+
+  ```matlab
+  Good_Fruit = 1 
+  Not_Good_Fruit = 0
+  ```
+
+  Let’s start with no knowledge:
+
+  <img src="images\image-20210914101455240.png" alt="image-20210914101455240" style="zoom:80%;" />
+
++ To train the perceptron, we will show it each example and have it categorize each one.
++ Since it’s starting with no knowledge, it is going to make mistakes. When it makes a mistake, we are going to adjust the weights to make that mistake less likely in the future.
+
++ When we adjust the weights, we’re going to take relatively small steps to be sure we don’t over-correct and create new problems.
+
++ We’re going to learn the category “good fruit” defined as anything that is sweet.
+
+  ```matlab
+  Good fruit = 1
+  Not good fruit = 0
+  ```
+
+  **Show it a banana:**
+
+  <img src="images\image-20210914101722693.png" alt="image-20210914101722693" style="zoom:80%;" />
+
+  + In this case we have: 
+
+    (1 X 0) = 0 
+
+    \+ (1 X 0) = 0 
+
+    \+ (0 X 0) = 0 
+
+  + It adds up to 0.0. 
+
+  + Since that is less than the threshold (0.40), we responded “no.” 
+
+  + Is that correct? No.
+
++ Since we got it wrong, we need to change the weights. We’ll do that using the delta rule (delta for change).
+  $$
+  \begin{align*}
+  ∆w = \text{learning rate} \times \text{(teacher \bf{- output)}} \times \text{\bf{input}}
+  \end{align*}
+  $$
+
+The three parts of that are: 
+
++ <span style="color:red">**Learning rate:**</span> We set that ourselves. Set large enough that learning happens in a reasonable amount of time; and also small enough to avoid too fast. Here pick 0.25. 
++ <span style="color:red">**(teacher - output):**</span> The teacher knows the correct answer (e.g., that a banana should be a good fruit). In this case, the teacher says 1, the output is 0, so (1 - 0) = 1. 
++ <span style="color:red">**Input:**</span> That’s what came out of the node whose weight we’re adjusting. For the first node, 1.
+
++ To pull it together: 
+
+  − Learning rate: 0.25. 
+
+  − (teacher - output): 1. 
+
+  − input: 1.
+  $$
+  \begin{align*}
+  ∆w = 0.25 \times 1 \times 1 = 0.25.
+  \end{align*}
+  $$
+
++ Since it’s a ∆w, it’s telling us how much to change the first weight. In this case, we’re adding 0.25 to it.
+
+Let’s think about the delta rule:  <span style="color:red">**(teacher - output)**</span>
+
++ If we get the categorization right, (teacher - output) will be zero (the right answer minus itself).
++ In other words, if we get it right, we won’t change any of the weights. As far as we know we have a good solution, why would we change it?
++ If we get the categorization wrong, (teacher - output) will either be -1 or +1. 
+  + If we said “yes” when the answer was “no”, we’re too high on the weights and we will get a (teacher - output) of -1 which will result in reducing the weights. 
+  + If we said “no” when the answer was “yes”, we’re too low on the weights and this will cause them to be increased.
+
++ Input: 
+  + If the node whose weight we’re adjusting sent in a 0, then it didn’t participate in making the decision. In that case, it shouldn’t be adjusted. Multiplying by zero will make that happen. 
+  + If the node whose weight we’re adjusting sent in a 1, then it did participate and we should change the weight (up or down as needed) if the corresponding output wrong.
+
++ How do we change the weights for banana?
+
+  | Feature: | Learning rate: | (teacher - output): | Input: | ∆w    |
+  | -------- | -------------- | ------------------- | ------ | ----- |
+  | taste    | 0.25           | 1                   | 1      | +0.25 |
+  | seeds    | 0.25           | 1                   | 1      | +0.25 |
+  | skin     | 0.25           | 1                   | 0      | 0     |
+
+  **Here it is with the adjusted weights:**
+
+  <img src="images\image-20210914102819927.png" alt="image-20210914102819927" style="zoom:80%;" />
+
++ To continue training, we show it the next example, adjust the weights…
+
++ We will keep cycling through the examples until we go all the way through one time without making any changes to the weights. At that point, the concept is learned.
+
+  **Show it a pear:**
+
+  <img src="images\image-20210914102934394.png" alt="image-20210914102934394" style="zoom:80%;" />
+
++ How do we change the weights for pear?
+
+  | Feature: | Learning rate: | (teacher - output): | Input: | ∆w    |
+  | -------- | -------------- | ------------------- | ------ | ----- |
+  | taste    | 0.25           | 1                   | 1      | +0.25 |
+  | seeds    | 0.25           | 1                   | 0      | 0     |
+  | skin     | 0.25           | 1                   | 1      | +0.25 |
+
+  **Here it is with the adjusted weights:**
+
+  <img src="images\image-20210914103102386.png" alt="image-20210914103102386" style="zoom:80%;" />
+
+  **Show it a lemon:**
+
+  <img src="images\image-20210914103119188.png" alt="image-20210914103119188" style="zoom:80%;" />
+
++ How do we change the weights for lemon?
+
+  | Feature: | Learning rate: | (teacher - output): | Input: | ∆w   |
+  | -------- | -------------- | ------------------- | ------ | ---- |
+  | taste    | 0.25           | 0                   | 0      | 0    |
+  | seeds    | 0.25           | 0                   | 0      | 0    |
+  | skin     | 0.25           | 0                   | 0      | 0    |
+
+  **Show it a strawberry:**
+
+  <img src="images\image-20210914103211665.png" alt="image-20210914103211665" style="zoom:80%;" />
+
++ How do we change the weights for strawberry?
+
+  | Feature: | Learning rate: | (teacher - output): | Input: | ∆w   |
+  | -------- | -------------- | ------------------- | ------ | ---- |
+  | taste    | 0.25           | 0                   | 1      | 0    |
+  | seeds    | 0.25           | 0                   | 1      | 0    |
+  | skin     | 0.25           | 0                   | 1      | 0    |
+
+  **Here it is with the adjusted weights:**
+
+  <img src="images\image-20210914103354323.png" alt="image-20210914103354323" style="zoom:80%;" />
+
+  **Show it a green apple:**
+
+  <img src="images\image-20210914103417211.png" alt="image-20210914103417211" style="zoom:80%;" />
+
++ If you keep going, you will see that this perceptron can correctly classify the examples that we have.
