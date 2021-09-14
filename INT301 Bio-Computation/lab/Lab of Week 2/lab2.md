@@ -38,11 +38,11 @@ plot (p1(1,1:50), p1(2,1:50), 'b+', p1(1,51:100), p1(2,51:100), 'ro')
 >y     yellow        s     square
 >k     black         d     diamond
 >w     white         v     triangle (down)
->                    ^     triangle (up)
->                    <     triangle (left)
->                    >     triangle (right)
->                    p     pentagram
->                    h     hexagram
+>                     ^     triangle (up)
+>                     <     triangle (left)
+>                     >     triangle (right)
+>                     p     pentagram
+>                     h     hexagram
 >```
 >
 >2. The last three parameters are same as the first three ones, hence, two classes are given:

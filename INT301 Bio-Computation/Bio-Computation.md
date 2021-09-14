@@ -285,47 +285,47 @@ $$
 
 **Input unit** 
 
-<img src="images\image-20210910113737442.png" alt="image-20210910113737442" style="zoom:80%;" />
+<img src="images\image-20210910113737442.png" alt="image-20210910113737442" style="zoom: 67%;" />
 
 **Input unit** 
 
-<img src="images\image-20210910113809177.png" alt="image-20210910113809177" style="zoom:80%;" />
+<img src="images\image-20210910113809177.png" alt="image-20210910113809177" style="zoom: 67%;" />
 
 **Input unit**
 
-<img src="images\image-20210910113859520.png" alt="image-20210910113859520" style="zoom:80%;" />
+<img src="images\image-20210910113859520.png" alt="image-20210910113859520" style="zoom: 67%;" />
 
 **Input unit**
 
-<img src="images\image-20210910114049883.png" alt="image-20210910114049883" style="zoom:80%;" />
+<img src="images\image-20210910114049883.png" alt="image-20210910114049883" style="zoom: 67%;" />
 
 **Input unit**
 
-<img src="images\image-20210910114213034.png" alt="image-20210910114213034" style="zoom:80%;" />
+<img src="images\image-20210910114213034.png" alt="image-20210910114213034" style="zoom: 67%;" />
 
 **Input unit** 
 
-<img src="images\image-20210910114240377.png" alt="image-20210910114240377" style="zoom:80%;" />
+<img src="images\image-20210910114240377.png" alt="image-20210910114240377" style="zoom: 67%;" />
 
 **Input unit** 
 
-<img src="images\image-20210910114302602.png" alt="image-20210910114302602" style="zoom:80%;" />
+<img src="images\image-20210910114302602.png" alt="image-20210910114302602" style="zoom: 67%;" />
 
 **Input unit** 
 
-<img src="images\image-20210910114331930.png" alt="image-20210910114331930" style="zoom:80%;" />
+<img src="images\image-20210910114331930.png" alt="image-20210910114331930" style="zoom: 67%;" />
 
 **Input unit** 
 
-<img src="images\image-20210910133151581.png" alt="image-20210910133151581" style="zoom:80%;" />
+<img src="images\image-20210910133151581.png" alt="image-20210910133151581" style="zoom: 67%;" />
 
 **Input unit** 
 
-<img src="images\image-20210910133235332.png" alt="image-20210910133235332" style="zoom:80%;" />
+<img src="images\image-20210910133235332.png" alt="image-20210910133235332" style="zoom: 67%;" />
 
 **Input unit** 
 
-<img src="images\image-20210910133306227.png" alt="image-20210910133306227" style="zoom:80%;" />
+<img src="images\image-20210910133306227.png" alt="image-20210910133306227" style="zoom: 67%;" />
 
 ## Lecture 2
 
@@ -333,7 +333,7 @@ $$
 
 ### Content
 
->
+>[Perceptron (1958)](#Perceptron)
 
 ### Recall: Machine learning and ANN
 
@@ -424,7 +424,7 @@ $$
 
   **Supervised learning** is mainly applied in classification/prediction. 
 
-#### Perceptron (1958)
+#### Perceptron
 
 + The simplest architecture of perceptron comprises two layers of idealized “neurons”, which we shall call <span style="color:blue">***"units" of the network***</span>
 
@@ -532,7 +532,7 @@ Having the errors computed,
 
 + Perceptron training algorithm (<span style="color:red">**delta rule**</span>)
 
-  <img src="images\image-20210914101119552.png" alt="image-20210914101119552" style="zoom:80%;" />
+  <img src="images\image-20210914101119552.png" alt="image-20210914101119552" style="zoom: 67%;" />
 
 ##### Example
 
@@ -552,7 +552,7 @@ Having the errors computed,
 
   Let’s start with no knowledge:
 
-  <img src="images\image-20210914101455240.png" alt="image-20210914101455240" style="zoom:80%;" />
+  <img src="images\image-20210914101455240.png" alt="image-20210914101455240" style="zoom: 67%;" />
 
 + To train the perceptron, we will show it each example and have it categorize each one.
 + Since it’s starting with no knowledge, it is going to make mistakes. When it makes a mistake, we are going to adjust the weights to make that mistake less likely in the future.
@@ -568,7 +568,7 @@ Having the errors computed,
 
   **Show it a banana:**
 
-  <img src="images\image-20210914101722693.png" alt="image-20210914101722693" style="zoom:80%;" />
+  <img src="images\image-20210914101722693.png" alt="image-20210914101722693" style="zoom: 67%;" />
 
   + In this case we have: 
 
@@ -634,7 +634,7 @@ Let’s think about the delta rule:  <span style="color:red">**(teacher - output
 
   **Here it is with the adjusted weights:**
 
-  <img src="images\image-20210914102819927.png" alt="image-20210914102819927" style="zoom:80%;" />
+  <img src="images\image-20210914102819927.png" alt="image-20210914102819927" style="zoom: 67%;" />
 
 + To continue training, we show it the next example, adjust the weights…
 
@@ -642,7 +642,7 @@ Let’s think about the delta rule:  <span style="color:red">**(teacher - output
 
   **Show it a pear:**
 
-  <img src="images\image-20210914102934394.png" alt="image-20210914102934394" style="zoom:80%;" />
+  <img src="images\image-20210914102934394.png" alt="image-20210914102934394" style="zoom: 67%;" />
 
 + How do we change the weights for pear?
 
@@ -654,11 +654,11 @@ Let’s think about the delta rule:  <span style="color:red">**(teacher - output
 
   **Here it is with the adjusted weights:**
 
-  <img src="images\image-20210914103102386.png" alt="image-20210914103102386" style="zoom:80%;" />
+  <img src="images\image-20210914103102386.png" alt="image-20210914103102386" style="zoom: 67%;" />
 
   **Show it a lemon:**
 
-  <img src="images\image-20210914103119188.png" alt="image-20210914103119188" style="zoom:80%;" />
+  <img src="images\image-20210914103119188.png" alt="image-20210914103119188" style="zoom: 67%;" />
 
 + How do we change the weights for lemon?
 
@@ -670,7 +670,7 @@ Let’s think about the delta rule:  <span style="color:red">**(teacher - output
 
   **Show it a strawberry:**
 
-  <img src="images\image-20210914103211665.png" alt="image-20210914103211665" style="zoom:80%;" />
+  <img src="images\image-20210914103211665.png" alt="image-20210914103211665" style="zoom: 67%;" />
 
 + How do we change the weights for strawberry?
 
@@ -682,10 +682,10 @@ Let’s think about the delta rule:  <span style="color:red">**(teacher - output
 
   **Here it is with the adjusted weights:**
 
-  <img src="images\image-20210914103354323.png" alt="image-20210914103354323" style="zoom:80%;" />
+  <img src="images\image-20210914103354323.png" alt="image-20210914103354323" style="zoom: 67%;" />
 
   **Show it a green apple:**
 
-  <img src="images\image-20210914103417211.png" alt="image-20210914103417211" style="zoom:80%;" />
+  <img src="images\image-20210914103417211.png" alt="image-20210914103417211" style="zoom: 67%;" />
 
 + If you keep going, you will see that this perceptron can correctly classify the examples that we have.
