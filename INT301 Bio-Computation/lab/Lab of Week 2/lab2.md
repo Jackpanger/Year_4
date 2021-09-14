@@ -49,11 +49,11 @@ plot (p1(1,1:50), p1(2,1:50), 'b+', p1(1,51:100), p1(2,51:100), 'ro')
 >
 ><img src="..\..\images\image-20210914152917594.png" alt="image-20210914152917594" style="zoom:80%;" />
 
-### Deep learning code
 
-#### Exercise 1
 
-#####  Create net
+### Exercise 1
+
+#### Create net
 
 ```matlab
 mm = minmax(p1);
@@ -94,7 +94,7 @@ net = newp(mm,1);
 
    + In this case, newp(mm, 1) means the perceptron is in range of mm, and with 1-node output.
 
-##### Train net
+#### Train net
 
 1. **trainp_sh**
 
