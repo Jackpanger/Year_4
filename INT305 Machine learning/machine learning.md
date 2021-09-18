@@ -75,9 +75,11 @@
    + *Can I solve it analytically?* 
    + *Do I have data?* 
 2. Gather and organize data. 
+
 + *Preprocessing, cleaning, visualizing.*
+
 3. Establishing a baseline. 
-4.  Choosing a model, loss, regularization,… 
+4. Choosing a model, loss, regularization,… 
 5. Optimization (could be simple, could be a Phd…)， 
 6. Hyperparameter search. 
 7. Analyze performance & mistakes, and iterate back to step 4 (or 2).
@@ -165,9 +167,10 @@ We can visualize the behavior in the classification setting using a **Voronoi di
 >1. Find $k$ example $(x^{(i)}, t^{(i)}) $ (from the stored training set) closest to the test instance $x$. 
 >
 >2. Classification output is majority class
-> $$
-> y = \underset {t^{(z)}}{\operatorname {arg\,max} }\,\sum_{i=1}^k Ⅱ(t^{(z)}=t^{(i)})
-> $$
+>
+>$$
+>y = \underset {t^{(z)}}{\operatorname {arg\,max} }\,\sum_{i=1}^k Ⅱ(t^{(z)}=t^{(i)})
+>$$
 >
 >*$Ⅱ${statement} is the identity function and is equal to one whenever the statement is true. We could also write this as $\delta(t^{(z)},t^{(i)})$, with $\delta(a,b)=1$ if $a=6,0$ otherwise.* 
 
@@ -207,7 +210,7 @@ We can visualize the behavior in the classification setting using a **Voronoi di
 
 + We can measure the generalization error (error rate on new examples) 
   using a **test set**.
-  
+
   <Span style="color:rgb(130,50,150)">***PN: choose the k at the point of lowest error rate in test set* **</span>
 
 <img src="images\image-20210906202105173.png" alt="image-20210906202105173" style="zoom: 200%;" />
@@ -268,17 +271,17 @@ Therefore $O((\frac{1}{\epsilon})^d)$ balls are needed to cover the volume.
 #### Pitfalls: Computational Cost
 
 +  Number of computations at **training time**: 0 
-+ Number of computations at **test time**，per query (naïve algorithm) 
-  + Calculate D-dimensional Euclidean distances with $N$ data points: $O(ND)$ 
-  + Sort the distances: $O(N logN)$ 
-+ This must be done for each query, which is very expensive by the standards of a learning algorithm! 
-+ Need to store the entire dataset in niemorv! 
-+ Tons of work lias gone into algorithms and data structures for efficient nearest neighbors with high dimensions and/or large datasets.
++  Number of computations at **test time**，per query (naïve algorithm) 
+   + Calculate D-dimensional Euclidean distances with $N$ data points: $O(ND)$ 
+   + Sort the distances: $O(N logN)$ 
++  This must be done for each query, which is very expensive by the standards of a learning algorithm! 
++  Need to store the entire dataset in niemorv! 
++  Tons of work lias gone into algorithms and data structures for efficient nearest neighbors with high dimensions and/or large datasets.
 
 ##### Example: Digit Classification
 
 + KNN can perform a lot better with a good similarity measure. 
-+  Example: shape contexts for object recognition. In order to achieve invariance to image transformations, they tried to warp one image to match the other image. 
++ Example: shape contexts for object recognition. In order to achieve invariance to image transformations, they tried to warp one image to match the other image. 
   + Distance measure: average distance between corresponding points on warped images 
 + Achieved $0.63\%$ error on MNIST, compared with $3\%$ for Euclidean KNN. 
 + Competitive with conv nets at the time, but required careful engineering.
@@ -410,7 +413,7 @@ In supervised learning:   (data driven approach)
 
   2. <Span style="color:rgb(130,50,150)">***$w^Tx$ is inner product***</span>
 
-+  $y$ is linear in $x$.
++ $y$ is linear in $x$.
 
 Relation between the prediction y and inputs x is linear in both cases.
 
@@ -488,11 +491,15 @@ Why vectorize?
 
 + The equations, and the code, will be simpler and more readable. 
   Gets riel of dummy variables$/$indices! 
+
 + Vectorized code is much faster 
+
   + Cut down on Python interpreter overhead 
   + Use highly optimized linear algebra libraries (hardware support)
   + Matrix multiplication very fast on GPU (Graphics Processing Unit) 
+
 + Switching in and out of vectorized form is a skill you gain with practice 
+
   + Some derivations are easier to do element-wise 
   + Some algorithms are easier to write$ /$understand using for-loops 
     and vectorize later for performance
@@ -606,6 +613,7 @@ Solutions may be direct or iterative
   $$
 
 + While this solution is clean and the derivation easy to remember, like many algebraic solutions, it is somewhat ad hoc. 
+
 + On the hand, the tools of calculus are broadly applicable to differentiable loss functions...
 
 ##### Direct Solution II: Calculus
@@ -639,7 +647,7 @@ Solutions may be direct or iterative
     \end{align*}
     $$
 
-+  For loss derivatives, apply the <span style="color:blue">chain rule</span>:
++ For loss derivatives, apply the <span style="color:blue">chain rule</span>:
   $$
   \begin{align*}
   \frac{\partial \mathcal L}{\partial w_j} &= \frac{\mathrm{d}\mathcal L}{\mathrm{d}y}\frac{\partial y}{\partial w_j}\\
@@ -861,6 +869,7 @@ For the least squares problem, we have $\mathcal J(w) = \frac{1}{2N} ||Xw — t|
   $$
 
 + $\alpha > 0$ is a <span style="color:blue">learning rate</span> (or step size). The larger it is, the faster $w$ changes. 
+
   + We'll see later how to tune the learning rate, but values are typically small, e.g. $0.01$ or $0.0001$. 
   + If cost is the sum of $N$ individual losses rather than their average, smaller learning rate will be needed $(\alpha' = \alpha/N)$.
 
@@ -892,6 +901,7 @@ For the least squares problem, we have $\mathcal J(w) = \frac{1}{2N} ||Xw — t|
   $$
 
 + So gradient descent updates w in the direction of fastest decrease. 
+
 + Observe that once it converges, we get a critical point，i.e. $\frac{\partial \mathcal J}{\partial w} = 0$.
 
 ##### Gradient Descent for Linear Regression
@@ -962,6 +972,7 @@ For the least squares problem, we have $\mathcal J(w) = \frac{1}{2N} ||Xw — t|
 + Batch training is impractical if you have a large dataset $N\gg1$ (e.g. millions of training examples)!
 
 + <span style="color:blue">Stochastic gradient descent (SGD)</span>: update the parameters based on the gradient for a single training example.
+
   + 1—     Choose $i$ uniformly at random.
   + 2—     $\theta\leftarrow\theta-\alpha\frac{\partial\mathcal L^{(i)}}{\partial\theta}$
 
@@ -1008,6 +1019,7 @@ For the least squares problem, we have $\mathcal J(w) = \frac{1}{2N} ||Xw — t|
   <img src="images\image-20210913175941265.png" alt="image-20210913175941265" style="zoom:80%;" />
 
 + Typical strategy:
+
   + Use a large learning rate early in training so you can get close to the optimum 
   + Gradually decay the learning rate to reduce the fluctuations
 
@@ -1020,3 +1032,520 @@ For the least squares problem, we have $\mathcal J(w) = \frac{1}{2N} ||Xw — t|
   + fit$/$optimize the model (**gradient descent, stochastic gradient descent, convexity**) 
 + By mixing and matching these modular components, we can obtain new ML methods. 
 + Next lecture: apply this framework to classification
+
+## Lecture 3
+
+### Content
+
+>TBD
+
+### Overview
+
++ <span style="color:blue">Classification</span>: predicting a discrete-valued target 
+  + <span style="color:blue">Binary classification</span>: predicting a binary-valued target 
+  + <span style="color:blue">Multiclass classification</span>: predicting a discrete($>2$)-valued target
+
++ Examples of binary classification 
+  + predict whether a patient has a disease? given the presence or 
+    absence of various symptoms 
+  + classify e-mails as spam or non-spam
+  + predict whether a financial transaction is fraudulent
+
+**Binary linear classification **
+
++ **classification**: given a $D$-dimensional input $x \in \Bbb R^D$ predict $a$ discrete-valued target 
++ **binary**: predict a binary target $t \in {0,1} $
+  + Training examples with $t = 1$ are called positive examples, and training examples with $t = 0$ are called negative examples. Sorry. 
+  + $t \in \{0, 1\}$ or $t \in \{-1, +1\}$ is for coinput at ioiial convenience.  
+
++ **linear**: model prediction $y$ is a linear function of $x$, followed by a threshold $r$:
+
+  $$
+  \begin{array}{l}
+  z=\mathbf{w}^{\top} \mathbf{x}+b \\
+  y=\left\{\begin{array}{ll}
+  1 & \text { if } z \geq r \\
+  0 & \text { if } z<r
+  \end{array}\right.
+  \end{array}
+  $$
+
+### Simplifications
+
+**Eliminating the threshold **
+
++ We can assume without loss of generality (WLOG) that the threshold $r = 0$:
+  $$
+  \mathbf{w}^{\top} \mathbf{x}+b \geq r \quad \Longleftrightarrow \quad \mathbf{w}^{\top} \mathbf{x}+\underbrace{b-r}_{\triangleq w_{0}} \geq 0
+  $$
+
+**Eliminating the bias **
+
++ Add a dummy feature $x_0$ which always takes the value 1. The weight $w_o = b$ is equivalent to a bias (same as linear regression) 
+
+**Simplified model**
+
++ Receive input $x \in \Bbb R^{D+1}$ with $x_0=1$:
+  $$
+  \begin{array}{l}
+  z=\mathbf{w}^{\top} \mathbf{x} \\
+  y=\left\{\begin{array}{ll}
+  1 & \text { if } z \geq 0 \\
+  0 & \text { if } z<0
+  \end{array}\right.
+  \end{array}
+  $$
+
+#### **Examples**
+
++ Let’s consider some simple examples to examine the properties of our model 
+
++ Let’s focus oil minimizing the training set error, and forget about whether our model will generalize to a test set.
+  $$
+  \begin{array}{l}
+  \quad\textbf {NOT }\\
+  \begin{array}{cc|c}
+  x_{0} & x_{1} & \mathrm{t} \\
+  \hline 1 & 0 & 1 \\
+  1 & 1 & 0
+  \end{array}
+  \end{array}
+  $$
+
++ Suppose this is our training set, with the dummy feature $x_0$ included. 
+
++ Which conditions on $w_0, w_1$ guarantee perfect classification?
+
+  + When $x_1 =0$, need: $z = w_0x_0 + w_1x_1\geq0\Longleftrightarrow w_0\geq 0$ 
+
+  + When $x_1 =1$, need: $z = w_0x_0 + w_1x_1\geq0\Longleftrightarrow w_0+w_1< 0$ 
+
++  Example solution: $w_0=1$, $w_1 = -2$
+
++ Is this the only solution?
+  $$
+  \begin{array}{l}
+  \qquad \qquad \qquad\qquad\textbf { AND }\\
+  \begin{array}{ccc|lc}
+  x_{0} & x_{1} & x_{2} & \mathrm{t} & z=w_{0} x_{0}+w_{1} x_{1}+w_{2} x_{2} \\
+  \hline 1 & 0 & 0 & 0 & \text { need: } w_{0}<0 \\
+  1 & 0 & 1 & 0 & \text { need: } w_{0}+w_{2}<0 \\
+  1 & 1 & 0 & 0 & \text { need: } w_{0}+w_{1}<0 \\
+  1 & 1 & 1 & 1 & & \\
+  & & & & \text { need: } w_{0}+w_{1}+w_{2} \geq 0
+  \end{array}
+  \end{array}
+  $$
+  Example solution: $w_0 = -1.5, w_1 =1, w_2 = 1$
+
+### The Geometric Picture
+
+<span style="color:blue">**Input Space**</span>, or <span style="color:blue">**Data Space**</span> for NOT example**
+
+<img src="images\image-20210918195635241.png" alt="image-20210918195635241"  />
+
++ Weights (hypothesis) **w** are points
+
++ Weights (hypotheses) w can be represented by <span style="color:blue">half-spaces</span>
+
+  $H_+ = \{x:w^\top x\geq0\}, H_-=\{x:w^\top x< 0\}$
+
+  + The boundaries of these half-spaces pass through the origin (why?)
+
++ The boundary is the <span style="color:blue">decision boundary</span>: $\{x:w^\top x=0\}$
+  + In 2-D, it's a line, but in high dimensions it is a hyperplane
+
++ If the triaining examples can be perfectly sparated by a linear decision rule, we say <span style="color:blue">data is linearly separable</span>.
+
+**<span style="color:blue">Weight Space</span>**
+
+<img src="images\image-20210918200557690.png" alt="image-20210918200557690"  />
+
++ Weights (hypotheses) **w** are points
++ Each training example x specifies a half-space **w** must lie in to be correctly classified: $w^\top x\geq 0$ if $t=1$.
++ For NOT example:
+  + $x_{0}=1, x_{1}=0, t=1 \Longrightarrow\left(w_{0}, w_{1}\right) \in\left\{\mathbf{w}: w_{0} \geq 0\right\}$
+  + $x_{0}=1, x_{1}=0, t=1 \Longrightarrow\left(w_{0}, w_{1}\right) \in\left\{\mathbf{w}: w_{0}+w_1 < 0\right\}$
+
++ The region satisfying all the constraints is the <span style="color:blue">feasible region</span>; if this region is nonempty, the problem is <span style="color:blue">feasible</span>, otw it is <span style="color:blue">infeasible</span>.
+
++ The AND example requires three dimensions, including the duniiiiy one. 
++ To visualize data space and weight space for a 3»I) example, we can look 
+  at a 2-D slice. 
++ The visualizations are similar. 
+  + Feasible set will always have a corner at the origin.
+
+Visualizations of the **AND** example
+
+<img src="images\image-20210918201435274.png" alt="image-20210918201435274"  />
+
+1. Graph 1
+
+   \- Slice for $x_0=1$ and 
+
+   \- example sol: $w_0=-1.5, w_1=1,w_2=1$
+
+   \- decision boundary:$w_0x_0+w_1x_1+w_2x_2=0 \Longrightarrow -1.5+x_1+x_2=0$
+
+2. Graph2 
+
+   \- Slice for $w_0=-1.5$ for the constraints
+
+   \- $w_0<0$
+
+   \- $w_0+w_2<0$
+
+   \- $w_0+w_1<0$
+
+   \- $w_0+w_1+w_2\geq0$
+
+#### Summary | Binary Linear Classiers
+
++ Summary: Targets $t\in \{0,1\}$, inputs $x\in \Bbb R^{D+1}$ with $x_0=1$, and model is defines by weights **w** and
+  $$
+  \begin{align*}
+  \begin{array}{l}
+  z=\mathbf{w}^{\top} \mathbf{x} \\
+  y=\left\{\begin{array}{ll}
+  1 & \text { if } z \geq 0 \\
+  0 & \text { if } z<0
+  \end{array}\right.
+  \end{array}
+  \end{align*}
+  $$
+
++ How can we find good values for w? 
++ If training set is linearly separable, we could solve for w using linear programming 
+  + We could also apply an iterative procedure known as the perceptron algorithm (but this is primarily of historical interest). 
+
++ If it's not linearly separable, the problem is harder 
+  + Data is almost never linearly separable in real life.
+
+### Logistic Regression
+
+#### Loss Functions
+
++ Instead: define loss function then try to minimize the resulting 
+  cost function 
+  + Recall: cost is loss averaged (or suiiimed) over the training set 
+
++ Seemingly obvious loss function: <span style="color:blue">0-1 loss</span>
+  $$
+  \begin{aligned}
+  \mathcal{L}_{0-1}(y, t) &=\left\{\begin{array}{cc}
+  0 & \text { if } y=t \\
+  1 & \text { if } y \neq t
+  \end{array}\right.\\
+  &=\mathbb{I}[y \neq t]
+  \end{aligned}
+  $$
+
+##### Attempt 1: 0-1 loss
+
++ Usually, the cost J is the averaged loss over training examples; for 0-1 loss, this is the <span style="color:blue">misclassification rate</span>: 
+  $$
+  \mathcal{J}=\frac{1}{N} \sum_{i=1}^{N} \mathbb{I}\left[y^{(i)} \neq t^{(i)}\right]
+  $$
+
++ Problem: liow to optimize? In general, a hard problem (can be NP-hard) 
++ This is clue to the step function (0-1 loss) not being nice (continuous / smooth /convex etc)
+
++ Minimum  of  a  function  will  be  at  its  critical  points. 
+
++ Let’s try to find the critical point of 0-1 loss 
+
++ Chain rule:
+  $$
+  \frac{\partial \mathcal{L}_{0-1}}{\partial w_{j}}=\frac{\partial \mathcal{L}_{0-1}}{\partial z} \frac{\partial z}{\partial w_{j}}
+  $$
+
++ But $\partial \mathcal{L}_{0-1}/\partial z$ is zero everywhere it’s defined!
+
+  <img src="images\image-20210918231718595.png" alt="image-20210918231718595"  />
+
+  + $\partial \mathcal{L}_{0-1}/\partial w_{j}=0$ means that changing the weights by a very small amount probably has no effect on the loss. 
+  + Almost any point has 0 gradient!
+
+##### Attempt 2: Linear Regression
+
++ Sometimes we can replace the loss function we care about with one which is easier to optimize. This is known as <span style="color:blue">relaxation</span> with a smooth <span style="color:blue">surrogate loss function</span>.
+
++ One problem with $\mathcal{L}_{0-1}$: defined in terms of final prediction, which inherently involves a discontinuity
++ Instead, define loss in terms of $w^Tx$ directly 
+  + Redo notation for convenience: $z=w^Tx$
+
++ We already know liow to fit a linear regression model. Can we use this instead?
+  $$
+  \begin{aligned}
+  z &=\mathbf{w}^{\top} \mathbf{x} \\
+  \mathcal{L}_{\mathrm{SE}}(z, t) &=\frac{1}{2}(z-t)^{2}
+  \end{aligned}
+  $$
+
++ Doesn’t matter that the targets are actually binary. Treat them as continuous values. 
++ For this loss function, it makes sense to make final predictions by thresholding $z$ at $\frac{1}{2}$(why?)
+
+**The problem:**
+
+<img src="images\image-20210919000446361.png" alt="image-20210919000446361" style="zoom:80%;" />
+
++ The loss function hates when you make correct predictions with high confidence! 
++ If $t = 1$, it’s more unhappy about $z = 10$ than $z = 0$.
+
+##### Attempt 3: Logistic Activation Function
+
++ There’s obviously no reason to predict values outside $[0,1]$. Let’s squash $y$ into this interval. 
+
++ The <span style="color:blue">logistic  function</span>  is a  kind  of  <span style="color:blue">sigmoid</span>,  or 
+  S-shaped function:
+
+  <img src="C:\Users\ADMIN\AppData\Roaming\Typora\typora-user-images\image-20210919000941719.png" alt="image-20210919000941719"  />
+  $$
+  \begin{align*}
+  \sigma(z) = \frac{1}{1+e^{-z}}
+  \end{align*}
+  $$
+
++ $\sigma^{-1}(y)=\log(y/(1-y))$ is called the <span style="color:blue">logit</span>.
+
++ A linear model with a logistic nonlinearity is known as <span style="color:blue">log-linear</span>:
+  $$
+  \begin{aligned}
+  z &=\mathbf{w}^{\top} \mathbf{x} \\
+  y &= \sigma(z)\\
+  \mathcal{L}_{\mathrm{SE}}(y, t) &=\frac{1}{2}(z-t)^{2}
+  \end{aligned}
+  $$
+  
+
++ Used in this way, $\sigma$ is called an <span style="color:blue">activation function</span>.
+
+**The problem:** 
+(plot of $\mathcal L_{SE}$ as a function of $z$, assuming $t = 1$)
+
+<img src="images\image-20210919001225654.png" alt="image-20210919001225654"  />
+
++ For z $\ll0$ , we have $\sigma(z) \approx 0.$ 
++ $\frac{\partial \mathcal L}{\partial z} \approx 0 (\text{check!}) \Longrightarrow \frac{\partial \mathcal L}{\partial w_j} \approx0 => \text{derivative w.r.t. } w_j$ is small 
+  $\Longrightarrow w_j$ is like a critical point 
++ If the prediction is really wrong, you should be far from a critical point (which is your candidate solution).
+
++ Because $y \in [0,1]$, we can interpret it as the estimated probability that $t = 1$. If $t = 0$, then we want to heavily penalize $y\approx 1$. 
+
++ The pundits who were $99\%$ confident Clinton would win were much more wrong than the ones who were only $90\%$ confident. 
+
++ <span style="color:blue">Cross-entropy</span> loss (aka log loss) captures this intuition:
+
+  <img src="images\image-20210919002108339.png" alt="image-20210919002108339"  />
+  $$
+  \begin{aligned}
+  \mathcal{L}_{\mathrm{CE}}(y, t) &=\left\{\begin{array}{ll}
+  -\log y & \text { if } t=1 \\
+  -\log (1-y) & \text { if } t=0
+  \end{array}\right.\\
+  &=-t \log y-(1-t) \log (1-y)
+  \end{aligned}
+  $$
+
+#### **<span style="color:blue">Logistic Regression:</span>**
+
+**Plot is for target $t=1$**
+
+<img src="images\image-20210919002209273.png" alt="image-20210919002209273" style="zoom:80%;" />
+$$
+\begin{align*}
+z &= w^\top x\\
+y &= \sigma(z)\\
+&=\frac{1}{1+e^{-z}}\\
+\mathcal L_{CE} &= -t\log y-(1-t)\log(1-y)\\
+
+\end{align*}
+$$
+
+##### Gradient Descent for Logistic Regression
+
++ How do we minimize the cost J for logistic regression? No direct solution.
+  + Taking derivatives of $\mathcal J$ w.r.t. **w** and setting them to 0 doesn't have an explicit solution.
++ However, the logistic loss is a <span style="color:blue">convex function</span> in **w**, so let’s consider the <span style="color:blue">gradient descent</span> method from last lecture. 
+  + Recall: we <span style="color:blue">initialize</span> the weights to something reasonable and repeatedly adjust them in the <span style="color:blue">direction of steepest descent</span>. 
+  + A standard initialization is $w = 0$ (why?)
+
+##### Gradient of Logistic Loss
+
+$$
+\begin{aligned}
+\mathcal{L}_{\mathrm{CE}}(y, t) &=-t \log (y)-(1-t) \log (1-y) \\
+y &=1 /\left(1+e^{-z}\right) \text { and } z=\mathbf{w}^{\top} \mathbf{x}
+\end{aligned}
+$$
+Therefore
+$$
+\begin{aligned}
+\frac{\partial \mathcal{L}_{\mathrm{CE}}}{\partial w_{j}}=\frac{\partial \mathcal{L}_{\mathrm{CE}}}{\partial y} \cdot \frac{\partial y}{\partial z} \cdot \frac{\partial z}{\partial w_{j}} &=\left(-\frac{t}{y}+\frac{1-t}{1-y}\right) \cdot y(1-y) \cdot x_{j} \\
+&=(y-t) x_{j}
+\end{aligned}
+$$
+(verify this)
+
+Gradient descent (coordinatewise) update to find the weights of logistic regression:
+$$
+\begin{aligned}
+w_{j} & \leftarrow w_{j}-\alpha \frac{\partial \mathcal{J}}{\partial w_{j}} \\
+&=w_{j}-\frac{\alpha}{N} \sum_{i=1}^{N}\left(y^{(i)}-t^{(i)}\right) x_{j}^{(i)}
+\end{aligned}
+$$
+
+##### Gradient Descent for Logistic Regression
+
+Comparison of gradient descent updates:
+- Linear regression:
+$$
+\mathbf{w} \leftarrow \mathbf{w}-\frac{\alpha}{N} \sum_{i=1}^{N}\left(y^{(i)}-t^{(i)}\right) \mathbf{x}^{(i)}
+$$
+- Logistic regression:
+$$
+\mathbf{w} \leftarrow \mathbf{w}-\frac{\alpha}{N} \sum_{i=1}^{N}\left(y^{(i)}-t^{(i)}\right) \mathbf{x}^{(i)}
+$$
+- Not a coincidence! These are both examples of <span style="color:blue">generalized linear models</span>. But we won't go in further detail.
+- Notice $\frac{1}{N}$ in front of sums due to averaged losses. This is why you need smaller learning rate when cost is summed losses $\left(\alpha^{\prime}=\alpha / N\right)$.
+
+### Multiclass Classification and Softmax Regression 
+
+#### Overview
+
++ <span style="color:blue">Classification</span>: predicting a discrete-valued target
+  + <span style="color:blue"> Binary classification</span> predicting a binary-valued target 
+  + <span style="color:blue">Multiclass classification</span>: predicting a discrete($> 2$)-valued target
++ : predicting a binary-valued target 
+  + <span style="color:blue">Multiclass classification:</span> predicting a discrete(> 2 (-valued target 
++ Examples of multi-class classification 
+  + predict the value of a handwritten digit
+  + classify e-mails as spam, travel, work, personal 
+
+#### Multiclass Classification
+
++ Classification tasks with more than two categories
+
+  <img src="images\image-20210919003612256.png" alt="image-20210919003612256"  />
+
++ Targets form a discrete set $\{1,...,K\}$
+
++ It’s often more convenient to represent them as <span style="color:blue">one-hot vectors</span>, or a <span style="color:blue">one-of-K encoding</span>:
+  $$
+  \begin{align*}
+  \mathbf{t}=\underbrace{(0, \ldots, 0,1,0, \ldots, 0)}_{\text {entry } k \text { is } 1} \in \mathbb{R}^{K}
+  \end{align*}
+  $$
+
+##### Multiclass Linear Classification
+
+- We can start with a linear function of the inputs.
+- Now there are $D$ input dimensions and $K$ output dimensions, so we need $K \times D$ weights, which we arrange as a <span style="color:blue">weight matrix</span> $\mathbf{W}$.
+- Also, we have a $K$-dimensional vector $\mathbf{b}$ of biases.
+- A linear function of the inputs:
+$$
+z_{k}=\sum_{j=1}^{D} w_{k j} x_{j}+b_{k} \text { for } k=1,2, \ldots, K
+$$
+- We can eliminate the bias b by taking $\mathbf{W} \in \mathbb{R}^{K \times(D+1)}$ and adding a dummy variable $x_{0}=1 .$ So, vectorized:
+  $$
+  \begin{align*}
+  \mathbf{z}=\mathbf{W} \mathbf{x}+\mathbf{b} \quad \text{or with dummy }x_{0}=1 \quad \mathbf{z}=\mathbf{W} \mathbf{x}
+  \end{align*}
+  $$
+
+- How can we turn this linear prediction into a one-hot prediction?
+- We can interpret the magnitude of $z_{k}$ as an measure of how much the model prefers $k$ as its prediction.
+- If we do this, we should set
+
+$$
+y_{i}=\left\{\begin{array}{ll}
+1 & i=\arg \max _{k} z_{k} \\
+0 & \text { otherwise }
+\end{array}\right.
+$$
+
+##### Softmax Regression
+
+- We need to soften our predictions for the sake of optimization.
+- We want soft predictions that are like probabilities, i.e., $0 \leq y_{k} \leq 1$ and $\sum_{k} y_{k}=1$
+- A natural activation function to use is the softmax function, a multivariable generalization of the logistic function:
+$$
+y_{k}=\operatorname{softmax}\left(z_{1}, \ldots, z_{K}\right)_{k}=\frac{e^{z_{k}}}{\sum_{k^{\prime}} e^{z_{k^{\prime}}}}
+$$
+- Outputs can be interpreted as probabilities (positive and sum to 1 )
+- If $z_{k}$ is much larger than the others, then $\operatorname{softmax}(\mathbf{z})_{k} \approx 1$ and it behaves like argmax.
+
+- If a model outputs a vector of class probabilities, we can use cross-entropy as the loss function:
+$$
+\begin{aligned}
+\mathcal{L}_{\mathrm{CE}}(\mathbf{y}, \mathbf{t}) &=-\sum_{k=1}^{K} t_{k} \log y_{k} \\
+&=-\mathbf{t}^{\top}(\log \mathbf{y})
+\end{aligned}
+$$
+where the $\log$ is applied elementwise.
+- Just like with logistic regression, we typically combine the softmax and cross-entropy into a <span style="color:blue">softmax-cross-entropy</span> function.
+
+- <span style="color:blue">Softmax regression</span> (with dummy $x_{0}=1$ ):
+$$
+\begin{aligned}
+\mathbf{z} &=\mathbf{W} \mathbf{x} \\
+\mathbf{y} &=\operatorname{softmax}(\mathbf{z}) \\
+\mathcal{L}_{\mathrm{CE}} &=-\mathbf{t}^{\top}(\log \mathbf{y})
+\end{aligned}
+$$
+- Gradient descent updates can be derived for each row of $\mathbf{W}$ :
+$$
+\begin{aligned}
+\frac{\partial \mathcal{L}_{\mathrm{CE}}}{\partial \mathbf{w}_{k}} &=\frac{\partial \mathcal{L}_{\mathrm{CE}}}{\partial z_{k}} \cdot \frac{\partial z_{k}}{\partial \mathbf{w}_{k}}=\left(y_{k}-t_{k}\right) \cdot \mathbf{x} \\
+\mathbf{w}_{k} & \leftarrow \mathbf{w}_{k}-\alpha \frac{1}{N} \sum_{i=1}^{N}\left(y_{k}^{(i)}-t_{k}^{(i)}\right) \mathbf{x}^{(i)}
+\end{aligned}
+$$
+- Similar to linear/logistic reg (no coincidence) (verify the update)
+
+##### Prove the gradient ?
+
+##### Limits of Linear Classification
+
+Some datasets are not linearly separable, e.g. **XOR** 
+
+<img src="images\image-20210919004705482.png" alt="image-20210919004705482"  />
+
+Visually obvious, but how to show this? 
+
+**Showing that XOR is not linearly separable (proof by contradiction)** 
+
++ If two points lie in a half-space, line segment connecting them also lie in the same halfspace. 
+
++ Suppose there were some feasible weights (hypothesis). If the positive examples are in the positive half-space, then the green line segment must be as well. 
+
++ Similarly, the red line segment must line within the negative half-space.
+
+  <img src="images\image-20210919004838505.png" alt="image-20210919004838505"  />
+
++ But the intersection can't lie in both half-spaces. Contradiction! 
+
+- Sometimes we can overcome this limitation using feature maps, just like for linear regression. E.g., for XOR:
+$$
+\boldsymbol{\psi}(\mathbf{x})=\left(\begin{array}{c}
+x_{1} \\
+x_{2} \\
+x_{1} x_{2}
+\end{array}\right)
+$$
+$$
+\begin{array}{cc|ccc|c}
+x_{1} & x_{2} & \psi_{1}(\mathrm{x}) & \psi_{2}(\mathrm{x}) & \psi_{3}(\mathrm{x}) & t \\
+\hline 0 & 0 & 0 & 0 & 0 & 0 \\
+0 & 1 & 0 & 1 & 0 & 1 \\
+1 & 0 & 1 & 0 & 0 & 1 \\
+1 & 1 & 1 & 1 & 1 & 0
+\end{array}
+$$
+
+- This is linearly separable. (Try it!)
+
+### Next time...
+
+Feature maps are hard to design well, so next time we’ll see how to *learn* nonlinear feature maps directly using neural networks...
+
+<img src="images\image-20210919005138751.png" alt="image-20210919005138751" style="zoom:80%;" />
