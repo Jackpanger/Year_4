@@ -1261,7 +1261,6 @@ Visualizations of the **AND** example
   \frac{\partial \mathcal{L}_{0-1}}{\partial w_{j}}=\frac{\partial \mathcal{L}_{0-1}}{\partial z} \frac{\partial z}{\partial w_{j}}
   $$
   
-  
 + But $\partial \mathcal{L}_{0-1}/\partial z$ is zero everywhere it’s defined!
 
   <img src="images\image-20210918231718595.png" alt="image-20210918231718595"  />
@@ -1542,7 +1541,7 @@ $$
 $$
 - Similar to linear/logistic regression (no coincidence) 
 
-##### Prove the gradient ?
+##### Prove the gradient ? (Wrong, Not finished)
 
 $$
 \begin{aligned}
