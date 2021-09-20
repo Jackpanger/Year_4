@@ -689,3 +689,278 @@ Let’s think about the delta rule:  <span style="color:red">**(teacher - output
   <img src="images\image-20210914103417211.png" alt="image-20210914103417211" style="zoom: 67%;" />
 
 + If you keep going, you will see that this perceptron can correctly classify the examples that we have.
+
+## Lecture 3
+
+### Content
+
+>TBD
+
+### Recall: Perceptron
+
+<img src="images\image-20210920150549671.png" alt="image-20210920150549671" style="zoom: 67%;" />
+
+#### Review of Perceptron rule
+
++ <span style="color:blue">**Perceptron rule**</span>: a sequential learning procedure for updating the weights.
+
++ Perceptron Learning Algorithm
+
+  <img src="images\image-20210920150707941.png" alt="image-20210920150707941" style="zoom: 70%;" />
+
+### Perceptron Rule: Further Discussion
+
++ A weight of connection changes <span style="color:blue">**only if**</span> both the input value and the error of the output unit are not equal to 0. 
+  +  If the output is correct ($y_e=o_e$) the weights $w_i$ are not changed 
+  + If the output is incorrect ($y_e≠o_e$) the weights $w_i$ are changed such that the output of the perceptron for the new weights is closer to $y_e$. 
++ The algorithm <span style="color:red">**converges**</span> to the correct classification, if 
+  + the training data is <span style="color:red">**linearly separable**</span>; 
+  + and the learning rate is sufficiently small, usually set below 1, which <span style="color:blue">**determines the amount of correction made in a single iteration**.</span>
+
+#### Perceptron convergence Theorem
+
+> For any data set that’s <span style="color:red">**linearly separable**</span>, the learning rule is guaranteed to find a solution in a finite number of steps.
+
+**Assumptions:**
+
++ At least one such set of weights, $w^*$, exists 
++ There are a finite number of training patterns. 
++ The threshold function is uni-polar (output is 0 or 1).
+
+### Network Performance for Perceptron 
+
+The network performance during training session can be measured by a <span style="color:red">**root-mean-square (RMS) error value**</span>
+$$
+\begin{align*}
+R M S=\sqrt{\frac{\sum_{p=0}^{n_{p}} \sum_{j=0}^{n_{o}} e_{j p}^{2}}{n_{p} n_{o}}}=\sqrt{\frac{\sum_{p=0}^{n_{p}} \sum_{j=0}^{n_{o}}\left(t_{j p}-X_{j p}\right)^{2}}{n_{p} n_{o}}}
+\end{align*}
+$$
+where 
+
+$n_p$ is the number of patterns in the training set and 
+
+$n_o$ is the number of units in the output layer
+
++ As the target output values $t_{jp}$ and $n_p$ and $n_o$ numbers are constants, <span style="color:green">the RMS error is a function of the instant output values Xjp only</span>
+  $$
+  \begin{align*}
+  R M S=\sqrt{\frac{\sum_{p=0}^{n_{p}} \sum_{j=0}^{n_{o}}\left(t_{j p}-X_{j p}\right)^{2}}{n_{p} n_{o}}}
+  \end{align*}
+  $$
+
++ In turn, the instant outputs $X_{jp}$ are functions of the input values $a_{ip}$ , which are also constants, and of the weights of connections $w_{ji}$
+  $$
+  \begin{align*}
+  X_{j p}=f\left(S_{j p}=\sum_{i=0}^{n_{i}} w_{j i} a_{i p}\right)=\tilde{f}\left(w_{j i}, a_{i p}\right)
+  \end{align*}
+  $$
+  So the <span style="color:red">**performance of the network**</span> measured by the RMS error also <span style="color:red">**is function of the weights of connections only**</span>
+  $$
+  \begin{align*}
+  \textit{RMS} = \textit{F}(w_{ji},a_{ip})
+  \end{align*}
+  $$
+
++ Performance of the network measured by the RMS error *is function of the weights of connections only.*
+
++ >The <span style="color:red">best performance of the network</span> corresponds to the <span style="color:red">minimum of the RMS error</span>, and we adjust the weights of connections in order to get that minimum.
+
+#### RMS on Training Set
+
+<img src="images\image-20210920152832469.png" alt="image-20210920152832469" style="zoom:80%;" />
+$$
+\begin{align*}
+\textit{RMS} = \textit{F}(w_{ji},a_{ip})
+\end{align*}
+$$
+Shown is a <span style="color:red">learning curve</span>, i.e., <span style="color:blue">dependence of the RMS error on the number of iterations for the training set.</span>
+
++ Initially, the adaptable weights are all set to small random values, and the network does not perform very well. 
++ As weights are adjusted during training, performance improves; when the error rate is low enough, training stops and the network is said to have <span style="color:red">converged</span>.
+
+#### RMS on the Training/Testing Data
+
+<span style="color:blue">**RMS on the Training Data**</span>
+$$
+\begin{align*}
+R M S^{training}=\sqrt{\frac{\sum_{p=0}^{n_{p}} \sum_{j=0}^{n_{o}}\left(t_{j p}-X_{j p}^{trained}\right)^{2}}{n_{p} n_{o}}}
+\end{align*}
+$$
+**<span style="color:blue">RMS on the Testing Data</span>**
+$$
+\begin{align*}
+R M S^{testing}=\sqrt{\frac{\sum_{p=0}^{n_{p}} \sum_{j=0}^{n_{o}}\left(t_{j p}-X_{j p}^{predicted}\right)^{2}}{n_{p} n_{o}}}
+\end{align*}
+$$
+
+### Recall: Perceptron Convergence Theorem
+
+> <span style="color:red">If</span> <span style="color:blue">a set of weights that allow the perceptron to respond correctly to all of the training patterns exists,</span> <span style="color:red">then</span> <span style="color:blue">the perceptron’s learning method will find the set of weights, and it will do it in a finite number of iterations.</span>**(Rosenblatt, 1962)**
+
+<img src="images\image-20210920153529158.png" alt="image-20210920153529158" style="zoom:80%;" />
+
+### More on Perceptron Convergence
+
++ There might be another possibility during a training session: 
+  + eventually performance stops improving, and the RMS error does not get smaller regardless of number of iterations. 
++ That means the network has <span style="color:red">**failed**</span> to learn all of the answers correctly. 
++ <span style="color:blue">**If the training is successful**</span>, the perceptron is said 
+  + to have gone through the supervised learning, and 
+  + is able to classify patterns similar to those of the training set.
+
+### Perceptron As a Classifier
+
+For $d$-dimensional data, perceptron consists of d-weights, a bias, and a thresholding activation function. For 2D data example，we have:
+
+<img src="images\image-20210920153755934.png" alt="image-20210920153755934" style="zoom:80%;" />
+
+If we group the weights as a vector w , the net output y can be expressed as:
+$$
+\begin{align*}
+y = g(w\vdot x+w_0 )
+\end{align*}
+$$
+
+#### Further Discussion Perceptron As a Classifier
+
++ A perceptron training is to compute weight vector: $W=[w_0,w_1,w_2,...,w_p]$ to correctly classify all the training examples.
+
+  E.g., consider when p=2
+
+  <img src="images\image-20210920154026573.png" alt="image-20210920154026573" style="zoom:80%;" />
+
+  W. X is a <span style="color:green">**hyperplane**</span>, which in 2d is a straight line.
+
++ For 2 classes, view net output as a <span style="color:red">discriminant function y(x, w)</span>, where: 
+
+  y(x, w) = 1 , if x in class 1 (C1) 
+
+  y(x, w) = - 1, if x in class 2 (C2)
+
+  **Example** 
+
+  <img src="images\image-20210920154225351.png" alt="image-20210920154225351" style="zoom: 80%;" />
+
++ For m classes, a classifier should partition the feature space into <span style="color:red">m **decision regions**</span> 
+  + The <span style="color:blue">**line or curve**</span> separating the classes is the <span style="color:red">**decision boundary**</span>. 
+  + In more than 2 dimensions, this is a hyperplane.
+
+#### Further on Perceptron Decision Boundary
+
+A perceptron represents a <span style="color:blue">**hyperplane decision surface**</span> in d-dimensional space, for example, a line in 2D, a plane in 3D, etc.
+
+<span style="color:red">The equation of the hyperplane is $w\vdot x^T = 0$</span>
+
+This is the equation for points in x-space that are <span style="color:blue">**on**</span> the boundary
+
+#### Decision boundary of Perceptron
+
+<img src="images\image-20210920154613124.png" alt="image-20210920154613124" style="zoom: 67%;" />
+
++ Perceptron is able to represent some useful functions 
++ But functions that are not linearly separable (e.g. XOR) are not representable
+
+##### Example of Perceptron Decision Boundary
+
+> Decision surface is the surface at which the output of the unit is precisely equal to the threshold, i.e. $∑w_i x_i =θ$
+
+<img src="images\image-20210920155008350.png" alt="image-20210920155008350" style="zoom: 50%;" />
+
+<img src="images\image-20210920155105792.png" alt="image-20210920155105792" style="zoom: 50%;" />
+
+<img src="images\image-20210920155212617.png" alt="image-20210920155212617" style="zoom: 50%;" />
+
+<img src="images\image-20210920155408911.png" alt="image-20210920155408911" style="zoom: 50%;" />
+
+### Linear Separability Problem
+
++ If two classes of patterns can be separated by a decision boundary, represented by the linear equation
+  $$
+  \begin{align*}
+  b+\sum_{i=1}^nx_iw_i=0
+  \end{align*}
+  $$
+  then they are said to be <span style="color:red">**linearly separable**</span> and the perceptron can correctly classify any patterns 
+
+  NOTE: <span style="color:red">**without the bias term, the hyperplane will be forced to intersect origin.**</span>
+
++ Decision boundary (i.e., *W, b* ) of linearly separable classes can be determined either by some learning procedures, or by solving linear equation systems based on representative patterns of each classes 
++ <span style="color:red">If such a decision boundary does not exist, then the two classes are said to be linearly inseparable. </span>
++ Linearly inseparable problems cannot be solved by the simple perceptron network, more sophisticated architecture is needed.
+
++ Examples of linearly inseparable classes 
+
+  <span style="color:blue">**Logical XOR (exclusive OR) function**</span> 
+
+  patterns (bipolar) decision boundary 
+
+  <img src="images\image-20210920155844043.png" alt="image-20210920155844043" style="zoom:67%;" />
+  $$
+  \begin{align*}
+  \begin{array}{ccc}
+  x_{1} & x_{2} & y \\
+  -1 & -1 & -1 \\
+  -1 & 1 & 1 \\
+  1 & -1 & 1 \\
+  1 & 1 & -1
+  \end{array}
+  \end{align*}
+  $$
+  No line can separate these two classes, as can be seen from the fact that the following linear inequality system has no solution 
+  $$
+  \left\{\begin{array}{l}
+  \boldsymbol{b}-\boldsymbol{w}_{1}-\boldsymbol{w}_{2}<0 \quad(1)\\
+  \boldsymbol{b}-\boldsymbol{w}_{1}+\boldsymbol{w}_{2} \geq 0 \quad(2)\\
+  \boldsymbol{b}+\boldsymbol{w}_{1}-\boldsymbol{w}_{2} \geq 0 \quad(3)\\
+  \boldsymbol{b}+\boldsymbol{w}_{1}+\boldsymbol{w}_{2}<0 \quad(4)
+  \end{array}\right.
+  $$
+  because we have b < 0 from (1) + (4), and b >= 0 from (2) + (3), which is a contradiction 
+
++ Examples of linearly separable classes 
+
+  -<span style="color:blue"> **Logical AND function**</span>
+
+  patterns (bipolar) decision boundary
+  $$
+  \begin{align*}
+  \begin{array}{rrrr}
+  x_{1} & x_{2} & y & w_{1}=1 \\
+  -1 & -1 & -1 & w_{2}=1 \\
+  -1 & 1 & -1 & b=-1 \\
+  1 & -1 & -1 & \theta=0 \\
+  1 & 1 & 1 & \color{green}{-1+x_{1}+x_{2}=0}
+  \end{array}
+  \end{align*}
+  $$
+  <img src="images\image-20210920160010048.png" alt="image-20210920160010048" style="zoom:67%;" />
+
+  -<span style="color:blue">**Logical OR function** </span>
+
+  patterns (bipolar) decision boundary
+
+  <img src="images\image-20210920160051626.png" alt="image-20210920160051626" style="zoom:67%;" />
+  $$
+  \begin{align*}
+  \begin{array}{rrrr}
+  x_{1} & x_{2} & y & w_{1}=1 \\
+  -1 & -1 & -1 & w_{2}=1 \\
+  -1 & 1 & -1 & b=1 \\
+  1 & -1 & 1 & \theta=0 \\
+  1 & 1 & 1 & \color{green}{1+x_{1}+x_{2}=0}
+  \end{array}
+  \end{align*}
+  $$
+
+### Tips for Building ANN
+
+Formulating neural network solutions for particular problems is a multi-stage process: 
+
+1. Understand and specify the problem in terms of inputs and required outputs 
+2. Take the simplest form of network you think might be able to solve your problem 
+3. Try to find the appropriate connection weights (including neuron thresholds) so that the network produces the right outputs for each input in its training data 
+4. Make sure that the network works on its training data and test its generalization by checking its performance on new testing data 
+5. If the network doesn’t perform well enough, go back to stage 3 and try harder 
+6. If the network still doesn’t perform well enough, go back to stage 2 and try harder 
+7. If the network still doesn’t perform well enough, go back to stage 1 and try harder 
+8. Problem solved – or not

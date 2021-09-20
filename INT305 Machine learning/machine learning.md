@@ -1100,7 +1100,7 @@ For the least squares problem, we have $\mathcal J(w) = \frac{1}{2N} ||Xw — t|
 
 + Let’s consider some simple examples to examine the properties of our model 
 
-+ Let’s focus oil minimizing the training set error, and forget about whether our model will generalize to a test set.
++ Let’s focus on minimizing the training set error, and forget about whether our model will generalize to a test set.
   $$
   \begin{array}{l}
   \quad\textbf {NOT }\\
@@ -1124,8 +1124,7 @@ For the least squares problem, we have $\mathcal J(w) = \frac{1}{2N} ||Xw — t|
 
 + Is this the only solution?
   $$
-  \begin{array}{l}
-  \qquad \qquad \qquad\qquad\textbf { AND }\\
+  \textbf { AND }\\
   \begin{array}{ccc|lc}
   x_{0} & x_{1} & x_{2} & \mathrm{t} & z=w_{0} x_{0}+w_{1} x_{1}+w_{2} x_{2} \\
   \hline 1 & 0 & 0 & 0 & \text { need: } w_{0}<0 \\
@@ -1134,13 +1133,12 @@ For the least squares problem, we have $\mathcal J(w) = \frac{1}{2N} ||Xw — t|
   1 & 1 & 1 & 1 & & \\
   & & & & \text { need: } w_{0}+w_{1}+w_{2} \geq 0
   \end{array}
-  \end{array}
   $$
   Example solution: $w_0 = -1.5, w_1 =1, w_2 = 1$
 
 ### The Geometric Picture
 
-<span style="color:blue">**Input Space**</span>, or <span style="color:blue">**Data Space**</span> for NOT example**
+**<span style="color:blue">Input Space</span>, or <span style="color:blue">Data Space</span> for NOT example**
 
 <img src="images\image-20210918195635241.png" alt="image-20210918195635241"  />
 
@@ -1162,16 +1160,21 @@ For the least squares problem, we have $\mathcal J(w) = \frac{1}{2N} ||Xw — t|
 <img src="images\image-20210918200557690.png" alt="image-20210918200557690"  />
 
 + Weights (hypotheses) **w** are points
+
 + Each training example x specifies a half-space **w** must lie in to be correctly classified: $w^\top x\geq 0$ if $t=1$.
+
 + For NOT example:
   + $x_{0}=1, x_{1}=0, t=1 \Longrightarrow\left(w_{0}, w_{1}\right) \in\left\{\mathbf{w}: w_{0} \geq 0\right\}$
   + $x_{0}=1, x_{1}=0, t=1 \Longrightarrow\left(w_{0}, w_{1}\right) \in\left\{\mathbf{w}: w_{0}+w_1 < 0\right\}$
 
 + The region satisfying all the constraints is the <span style="color:blue">feasible region</span>; if this region is nonempty, the problem is <span style="color:blue">feasible</span>, otw it is <span style="color:blue">infeasible</span>.
 
-+ The AND example requires three dimensions, including the duniiiiy one. 
-+ To visualize data space and weight space for a 3»I) example, we can look 
-  at a 2-D slice. 
+  <Span style="color:rgb(130,50,150)">***PN: otw $\rightarrow$ otherwise***</span>
+
++ The AND example requires three dimensions, including the dummy one. 
+
++ To visualize data space and weight space for a 3-D example, we can look at a 2-D slice. 
+
 + The visualizations are similar. 
   + Feasible set will always have a corner at the origin.
 
@@ -1187,7 +1190,7 @@ Visualizations of the **AND** example
 
    \- decision boundary:$w_0x_0+w_1x_1+w_2x_2=0 \Longrightarrow -1.5+x_1+x_2=0$
 
-2. Graph2 
+2. Graph 2 
 
    \- Slice for $w_0=-1.5$ for the constraints
 
@@ -1199,7 +1202,7 @@ Visualizations of the **AND** example
 
    \- $w_0+w_1+w_2\geq0$
 
-#### Summary | Binary Linear Classiers
+#### Summary | Binary Linear Classifiers
 
 + Summary: Targets $t\in \{0,1\}$, inputs $x\in \Bbb R^{D+1}$ with $x_0=1$, and model is defines by weights **w** and
   $$
@@ -1214,8 +1217,8 @@ Visualizations of the **AND** example
   \end{align*}
   $$
 
-+ How can we find good values for w? 
-+ If training set is linearly separable, we could solve for w using linear programming 
++ How can we find good values for **w**? 
++ If training set is linearly separable, we could solve for **w** using linear programming 
   + We could also apply an iterative procedure known as the perceptron algorithm (but this is primarily of historical interest). 
 
 + If it's not linearly separable, the problem is harder 
@@ -1225,10 +1228,9 @@ Visualizations of the **AND** example
 
 #### Loss Functions
 
-+ Instead: define loss function then try to minimize the resulting 
-  cost function 
-  + Recall: cost is loss averaged (or suiiimed) over the training set 
-
++ Instead: define loss function then try to minimize the resulting cost function 
+  + Recall: cost is loss averaged (or summed) over the training set 
+  
 + Seemingly obvious loss function: <span style="color:blue">0-1 loss</span>
   $$
   \begin{aligned}
@@ -1242,7 +1244,7 @@ Visualizations of the **AND** example
 
 ##### Attempt 1: 0-1 loss
 
-+ Usually, the cost J is the averaged loss over training examples; for 0-1 loss, this is the <span style="color:blue">misclassification rate</span>: 
++ Usually, the cost $\mathcal J$ is the averaged loss over training examples; for 0-1 loss, this is the <span style="color:blue">misclassification rate</span>: 
   $$
   \mathcal{J}=\frac{1}{N} \sum_{i=1}^{N} \mathbb{I}\left[y^{(i)} \neq t^{(i)}\right]
   $$
@@ -1250,7 +1252,7 @@ Visualizations of the **AND** example
 + Problem: liow to optimize? In general, a hard problem (can be NP-hard) 
 + This is clue to the step function (0-1 loss) not being nice (continuous / smooth /convex etc)
 
-+ Minimum  of  a  function  will  be  at  its  critical  points. 
++ Minimum of a function will be at its critical points. 
 
 + Let’s try to find the critical point of 0-1 loss 
 
@@ -1258,7 +1260,8 @@ Visualizations of the **AND** example
   $$
   \frac{\partial \mathcal{L}_{0-1}}{\partial w_{j}}=\frac{\partial \mathcal{L}_{0-1}}{\partial z} \frac{\partial z}{\partial w_{j}}
   $$
-
+  
+  
 + But $\partial \mathcal{L}_{0-1}/\partial z$ is zero everywhere it’s defined!
 
   <img src="images\image-20210918231718595.png" alt="image-20210918231718595"  />
@@ -1296,28 +1299,36 @@ Visualizations of the **AND** example
 
 + There’s obviously no reason to predict values outside $[0,1]$. Let’s squash $y$ into this interval. 
 
-+ The <span style="color:blue">logistic  function</span>  is a  kind  of  <span style="color:blue">sigmoid</span>,  or 
-  S-shaped function:
-
++ The <span style="color:blue">logistic  function</span>  is a  kind  of  <span style="color:blue">sigmoid</span>,  or S-shaped function:
+  
   <img src="C:\Users\ADMIN\AppData\Roaming\Typora\typora-user-images\image-20210919000941719.png" alt="image-20210919000941719"  />
   $$
   \begin{align*}
   \sigma(z) = \frac{1}{1+e^{-z}}
   \end{align*}
   $$
-
-+ $\sigma^{-1}(y)=\log(y/(1-y))$ is called the <span style="color:blue">logit</span>.
+  
++ $\sigma^{-1}(y)=\log(y/(1-y))$ is called the <span style="color:blue">logit</span>. 
+  $$
+  \begin{align*}
+  \text{let } x &= \text{logit}(y) = \log\frac{y}{1-y}\\
+  e^x &= \frac{y}{1-y}\\
+  1+e^x &= 1+\frac{y}{1-y} = \frac{1}{1-y}\\
+  \frac{1}{1+e^x} &= 1-y\\
+  y &= 1-\frac{1}{1+e^x} = \frac{e^x}{1+e^x}=\frac{1}{1+e^{-x}} = \sigma(z)
+  \end{align*}
+  $$
+  <Span style="color:rgb(130,50,150)">***PN: $\sigma'(z) = \sigma(z)(1-\sigma(z))$***</span>
 
 + A linear model with a logistic nonlinearity is known as <span style="color:blue">log-linear</span>:
   $$
   \begin{aligned}
   z &=\mathbf{w}^{\top} \mathbf{x} \\
   y &= \sigma(z)\\
-  \mathcal{L}_{\mathrm{SE}}(y, t) &=\frac{1}{2}(z-t)^{2}
+  \mathcal{L}_{\mathrm{SE}}(y, t) &=\frac{1}{2}(y-t)^{2}
   \end{aligned}
   $$
   
-
 + Used in this way, $\sigma$ is called an <span style="color:blue">activation function</span>.
 
 **The problem:** 
@@ -1326,8 +1337,9 @@ Visualizations of the **AND** example
 <img src="images\image-20210919001225654.png" alt="image-20210919001225654"  />
 
 + For z $\ll0$ , we have $\sigma(z) \approx 0.$ 
-+ $\frac{\partial \mathcal L}{\partial z} \approx 0 (\text{check!}) \Longrightarrow \frac{\partial \mathcal L}{\partial w_j} \approx0 => \text{derivative w.r.t. } w_j$ is small 
-  $\Longrightarrow w_j$ is like a critical point 
+
++ $\frac{\partial \mathcal L}{\partial z} \approx 0 (\text{check!}) \Longrightarrow \frac{\partial \mathcal L}{\partial w_j} \approx0 => \text{derivative w.r.t. } w_j$ is small $\Longrightarrow w_j$ is like a critical point 
+
 + If the prediction is really wrong, you should be far from a critical point (which is your candidate solution).
 
 + Because $y \in [0,1]$, we can interpret it as the estimated probability that $t = 1$. If $t = 0$, then we want to heavily penalize $y\approx 1$. 
@@ -1336,6 +1348,10 @@ Visualizations of the **AND** example
 
 + <span style="color:blue">Cross-entropy</span> loss (aka log loss) captures this intuition:
 
+  <Span style="color:rgb(130,50,150)">***PN: aka $\rightarrow$ as known as***</span>
+  
+  
+  
   <img src="images\image-20210919002108339.png" alt="image-20210919002108339"  />
   $$
   \begin{aligned}
@@ -1350,8 +1366,21 @@ Visualizations of the **AND** example
 #### **<span style="color:blue">Logistic Regression:</span>**
 
 **Plot is for target $t=1$**
+$$
+\begin{aligned}
+\frac{\partial \mathcal{L}_{\mathrm{CE}}}{\partial z}=\frac{\partial \mathcal{L}_{\mathrm{CE}}}{\partial y} \cdot \frac{\partial y}{\partial z}  &=\left(-\frac{t}{y}+\frac{1-t}{1-y}\right) \cdot y(1-y) \\
+&=y-t
+\end{aligned}
+$$
+<Span style="color:rgb(130,50,150)">***PN: When $z\rightarrow-3,\, y\rightarrow 0,\, \mathcal L_{CE}\rightarrow 3,\, y-t\rightarrow -1 (t=1).$***</span>
 
-<img src="images\image-20210919002209273.png" alt="image-20210919002209273" style="zoom:80%;" />
+<Span style="color:rgb(130,50,150)">***Hence, the dashed line is tangent to the curve at the point $z = -3$:*** </span>
+$$
+\begin{align*}
+d= (y-t)z+3 \Longrightarrow d = -z+3
+\end{align*}
+$$
+<img src="images\image-20210919173531778.png" alt="image-20210919173531778" style="zoom:80%;" />
 $$
 \begin{align*}
 z &= w^\top x\\
@@ -1364,11 +1393,19 @@ $$
 
 ##### Gradient Descent for Logistic Regression
 
-+ How do we minimize the cost J for logistic regression? No direct solution.
++ How do we minimize the cost $\mathcal J$ for logistic regression? No direct solution.
   + Taking derivatives of $\mathcal J$ w.r.t. **w** and setting them to 0 doesn't have an explicit solution.
+  
+    **Related link:** 
+  
+    1. [概率视角下的线性模型：逻辑回归有解析解吗？](https://kexue.fm/archives/8578)
+    2. [Easy Logistic Regression with an Analytical Solution](https://towardsdatascience.com/easy-logistic-regression-with-an-analytical-solution-eb4589c2cd2d)
 + However, the logistic loss is a <span style="color:blue">convex function</span> in **w**, so let’s consider the <span style="color:blue">gradient descent</span> method from last lecture. 
   + Recall: we <span style="color:blue">initialize</span> the weights to something reasonable and repeatedly adjust them in the <span style="color:blue">direction of steepest descent</span>. 
+  
   + A standard initialization is $w = 0$ (why?)
+  
+    <Span style="color:rgb(130,50,150)">***Andrew Ng***: *Logistic Regression doesn’t have a hidden layer. If you initialize the weights to zeros, the first example x fed in the logistic regression will output zero but the derivatives of the Logistic Regression depend on the input x (because there’s no hidden layer) which is not zero. So at the second iteration, the weights values follow x’s distribution and are different from each other if x is not a constant vector.*</span>
 
 ##### Gradient of Logistic Loss
 
@@ -1385,9 +1422,7 @@ $$
 &=(y-t) x_{j}
 \end{aligned}
 $$
-(verify this)
-
-Gradient descent (coordinatewise) update to find the weights of logistic regression:
+Gradient descent (coordinate-wise) update to find the weights of logistic regression:
 $$
 \begin{aligned}
 w_{j} & \leftarrow w_{j}-\alpha \frac{\partial \mathcal{J}}{\partial w_{j}} \\
@@ -1416,8 +1451,6 @@ $$
 + <span style="color:blue">Classification</span>: predicting a discrete-valued target
   + <span style="color:blue"> Binary classification</span> predicting a binary-valued target 
   + <span style="color:blue">Multiclass classification</span>: predicting a discrete($> 2$)-valued target
-+ : predicting a binary-valued target 
-  + <span style="color:blue">Multiclass classification:</span> predicting a discrete(> 2 (-valued target 
 + Examples of multi-class classification 
   + predict the value of a handwritten digit
   + classify e-mails as spam, travel, work, personal 
@@ -1453,7 +1486,7 @@ $$
   \end{align*}
   $$
 
-- How can we turn this linear prediction into a one-hot prediction?
+- How can we turn this linear prediction into a <span style="color:blue">one-hot prediction</span>?
 - We can interpret the magnitude of $z_{k}$ as an measure of how much the model prefers $k$ as its prediction.
 - If we do this, we should set
 
@@ -1467,22 +1500,29 @@ $$
 ##### Softmax Regression
 
 - We need to soften our predictions for the sake of optimization.
+
 - We want soft predictions that are like probabilities, i.e., $0 \leq y_{k} \leq 1$ and $\sum_{k} y_{k}=1$
-- A natural activation function to use is the softmax function, a multivariable generalization of the logistic function:
-$$
-y_{k}=\operatorname{softmax}\left(z_{1}, \ldots, z_{K}\right)_{k}=\frac{e^{z_{k}}}{\sum_{k^{\prime}} e^{z_{k^{\prime}}}}
-$$
-- Outputs can be interpreted as probabilities (positive and sum to 1 )
-- If $z_{k}$ is much larger than the others, then $\operatorname{softmax}(\mathbf{z})_{k} \approx 1$ and it behaves like argmax.
+
+- A natural activation function to use is the <span style="color:blue">softmax function</span>, a multivariable generalization of the logistic function:
+  $$
+  \begin{align*}
+  y_{k}=\operatorname{softmax}\left(z_{1}, \ldots, z_{K}\right)_{k}=\frac{e^{z_{k}}}{\sum_{k^{\prime}} e^{z_{k^{\prime}}}}
+  \end{align*}
+  $$
+
+  + Outputs can be interpreted as probabilities (positive and sum to 1 )
+
+  + If $z_{k}$ is much larger than the others, then $\operatorname{softmax}(\mathbf{z})_{k} \approx 1$ and it behaves like argmax.
 
 - If a model outputs a vector of class probabilities, we can use cross-entropy as the loss function:
+
 $$
 \begin{aligned}
 \mathcal{L}_{\mathrm{CE}}(\mathbf{y}, \mathbf{t}) &=-\sum_{k=1}^{K} t_{k} \log y_{k} \\
 &=-\mathbf{t}^{\top}(\log \mathbf{y})
 \end{aligned}
 $$
-where the $\log$ is applied elementwise.
+​		where the $\log$ is applied elementwise.
 - Just like with logistic regression, we typically combine the softmax and cross-entropy into a <span style="color:blue">softmax-cross-entropy</span> function.
 
 - <span style="color:blue">Softmax regression</span> (with dummy $x_{0}=1$ ):
@@ -1500,9 +1540,16 @@ $$
 \mathbf{w}_{k} & \leftarrow \mathbf{w}_{k}-\alpha \frac{1}{N} \sum_{i=1}^{N}\left(y_{k}^{(i)}-t_{k}^{(i)}\right) \mathbf{x}^{(i)}
 \end{aligned}
 $$
-- Similar to linear/logistic reg (no coincidence) (verify the update)
+- Similar to linear/logistic regression (no coincidence) 
 
 ##### Prove the gradient ?
+
+$$
+\begin{aligned}
+\frac{\partial \mathcal{L}_{\mathrm{CE}}}{\partial w_{k}}=\frac{\partial \mathcal{L}_{\mathrm{CE}}}{\partial y_k} \cdot \frac{\partial y_k}{\partial z_k} \cdot \frac{\partial z_k}{\partial w_{k}} &=\left(-\frac{t_k}{y_k}+\frac{1-t}{1-y}\right) \cdot y(1-y) \cdot x_{j} \\
+&=(y_k-t_k) x_{k}
+\end{aligned}
+$$
 
 ##### Limits of Linear Classification
 
