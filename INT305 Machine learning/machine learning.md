@@ -1336,10 +1336,10 @@ Visualizations of the **AND** example
 <img src="images\image-20210919001225654.png" alt="image-20210919001225654"  />
 
 + For z $\ll0$ , we have $\sigma(z) \approx 0.$ 
-
 + $\frac{\partial \mathcal L}{\partial z} \approx 0 (\text{check!}) \Longrightarrow \frac{\partial \mathcal L}{\partial w_j} \approx0 => \text{derivative w.r.t. } w_j$ is small $\Longrightarrow w_j$ is like a critical point 
-
 + If the prediction is really wrong, you should be far from a critical point (which is your candidate solution).
+
+#### Logistic Regression
 
 + Because $y \in [0,1]$, we can interpret it as the estimated probability that $t = 1$. If $t = 0$, then we want to heavily penalize $y\approx 1$. 
 
@@ -1362,7 +1362,7 @@ Visualizations of the **AND** example
   \end{aligned}
   $$
 
-#### **<span style="color:blue">Logistic Regression:</span>**
+**<span style="color:blue">Logistic Regression:</span>**
 
 **Plot is for target $t=1$**
 $$
@@ -1541,14 +1541,46 @@ $$
 $$
 - Similar to linear/logistic regression (no coincidence) 
 
-##### Prove the gradient ? (Wrong, Not finished)
+##### Prove the gradient ? 
 
 $$
-\begin{aligned}
-\frac{\partial \mathcal{L}_{\mathrm{CE}}}{\partial w_{k}}=\frac{\partial \mathcal{L}_{\mathrm{CE}}}{\partial y_k} \cdot \frac{\partial y_k}{\partial z_k} \cdot \frac{\partial z_k}{\partial w_{k}} &=\left(-\frac{t_k}{y_k}+\frac{1-t}{1-y}\right) \cdot y(1-y) \cdot x_{j} \\
-&=(y_k-t_k) x_{k}
-\end{aligned}
+\begin{flalign*}
+&\text{To prove }\frac{\partial \mathcal{L}_{\mathrm{CE}}}{\partial \mathbf{w}_{k}} =\frac{\partial \mathcal{L}_{\mathrm{CE}}}{\partial z_{k}} \cdot \frac{\partial z_{k}}{\partial \mathbf{w}_{k}}=\left(y_{k}-t_{k}\right) \cdot \mathbf{x} \\\\
+
+\enclose{circle}{1}&\frac{\partial \mathcal L_{CE}}{\partial y_T} = -\frac{1}{y_T}, (t_T=1,t_{m\neq T}=0)\\
+&(PN: \mathcal{L}_{\mathrm{CE}} =-\mathbf{t}^{\top}(\log \mathbf{y}))\\
+
+\enclose{circle}{2}&\mathit{If }\,\, K = T:\\
+&\frac{\partial y_T}{z_k} = \frac{\partial y_k}{\partial z_k} =\frac{\partial}{\partial z_k}(\frac{e^{z_k}}{\sum_{k^{'}}e^{z_{k^{'}}}})=e^{z_k}(\sum_{k^{'}}e^{z_{k^{'}}})^{-1}+e^{z_k}(-1)(\sum_{k^{'}}e^{z_{k^{'}}})^{-2}e^{z_k}\\
+& =e^{z_k}(\sum_{k^{'}}e^{z_{k^{'}}})^{-1}(1-e^{z_k}(\sum_{k^{'}}e^{z_{k^{'}}})^{-1}) \\
+&=y_k(1-y_k)\\
+&\mathit{If }\,\, K \neq T:\\
+&\frac{\partial y_T}{z_k} =\frac{\partial}{\partial z_k}(\frac{e^{z_T}}{\sum_{k^{'}}e^{z_{k^{'}}}})=\frac{\partial}{\partial z_k}(e^{z_T}(\sum_{k^{'}}e^{z_{k^{'}}})^{-1})\\
+&=e^{z_T}(-1)(\sum_{k^{'}}e^{z_{k^{'}}})^{-2}e^{z_{k^{'}}} =(\frac{e^{z_T}}{\sum_{k^{'}}e^{z_{k^{'}}}})\vdot (\frac{e^{z_k}}{\sum_{k^{'}}e^{z_{k^{'}}}})\\
+&=-y_Ty_k\\
+
+
+\enclose{circle}{3}&(a)\mathit{If }\,\, t_k = 1,(or:T=k):\\
+&\frac{\partial \mathcal L_{CE}}{\partial z_k} = \frac{\partial \mathcal L_{CE}}{\partial y_T}\vdot \frac{\partial y_T}{\partial z_k} = -\frac{1}{y_k}\vdot y_k\vdot (1-y_k)=y_k-1=y_k-t_k(t_k=1)\\
+&(b)\mathit{If }\,\, t_k \neq 1,(or:T\neq k) \rightarrow t_k=0:\\
+&\frac{\partial \mathcal L_{CE}}{\partial z_k} = \frac{\partial \mathcal L_{CE}}{\partial y_T}\vdot \frac{\partial y_T}{\partial z_k}=-\frac{1}{y_k}\vdot (-y_Ty_k)=y_k=y_k-0=y_k-t_k(t_k=0)\\
+
+
+\enclose{circle}{4}& \frac{\partial z_k}{\partial w_k}=x\\
+
+
+
+\enclose{circle}{5}& \frac{\partial \mathcal L_{CE}}{\partial w_k}=\frac{\partial \mathcal L_{CE}}{\partial z_k}\frac{\partial z_k}{\partial w_k} = (y_k-t_k)\vdot x\\
+\end{flalign*}
 $$
+
+<Span style="color:rgb(130,50,150)">***PN:***</span>
+
+1. <Span style="color:rgb(130,50,150)">***$\frac{\partial \mathcal{L}_{\mathrm{CE}}}{\partial \mathbf{w}_{k}} =\frac{\partial \mathcal{L}_{\mathrm{CE}}}{\partial z_{k}} \cdot \frac{\partial z_{k}}{\partial \mathbf{w}_{k}} = \frac{\partial \mathcal L_{CE}}{\partial y_T}\vdot \frac{\partial y_T}{\partial z_k}\vdot \frac{\partial z_{k}}{\partial \mathbf{w}_{k}}$***</span>
+2. <Span style="color:rgb(130,50,150)">***$\frac{\partial \mathcal L_{CE}}{\partial y_T} = -\frac{1}{y_T}$***</span>
+3. <Span style="color:rgb(130,50,150)">***$\frac{\partial y_T}{z_k} = y_k(1-y_k)\text{ when K=T or }\frac{\partial y_T}{z_k}=-y_Ty_k \text{ when K}\neq T $***</span>
+4. <Span style="color:rgb(130,50,150)">***$\frac{\partial \mathcal L_{CE}}{\partial z_k} = \frac{\partial \mathcal L_{CE}}{\partial y_T}\vdot \frac{\partial y_T}{\partial z_k}=y_k-t_k$***</span>
+5. <Span style="color:rgb(130,50,150)">***$\frac{\partial \mathcal L_{CE}}{\partial w}=\frac{\partial \mathcal L_{CE}}{\partial z_k}\frac{\partial z_k}{\partial w} = (y_k-t_k)\vdot x$***</span>
 
 ##### Limits of Linear Classification
 
