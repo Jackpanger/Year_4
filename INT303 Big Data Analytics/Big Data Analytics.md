@@ -309,3 +309,231 @@ $$
 s = \sqrt{s^2} = \sqrt{\frac{1}{n-1}\sum_{i=1}^n|x_i-\overline{x}|^2}
 \end{align*}
 $$
+
+## Lecture 3
+
+### Content
+
+>TBD
+>
+>
+
+### The Basic EDA Workflow
+
+1. Build a DataFrame from the data (ideally, put all data in this object) 
+
+2. Clean the DataFrame. It should have the following properties: 
+
+   – Each row describes a single object
+
+   – Each column describes a property of that object 
+
+   – Columns are numeric whenever appropriate 
+
+   – Columns contain atomic properties that cannot be further decomposed 
+
+3. Explore global properties. Use histograms, scatter plots, and aggregation functions to summarize the data. 
+
+4. Explore group properties. Use groupby, queries, and small multiples to compare subsets of the data.
+
+#### BUILDING A DATAFRAME
+
++ The easiest way to build a dataframe is simply to read in a CSV file. 
++ We WILL see an example of this here, and we shall see more examples in labs.
++ We'll also see how we may combine multiple data sources into a larger dataframe.
+
+#### CLEANING DATA
+
++ Dealing with missing values 
++ Transforming types appropriately 
++ Taking care of data integrity
+
+##### WHY DATA CLEANING IS ESSENTIAL?
+
+1. Error-Free Data 
+2. Data Quality 
+3. Accurate and Efficient Data 
+4. Complete Data 
+5. Maintains Data Consistency
+
+<img src="images\image-20210923114046415.png" alt="image-20210923114046415" style="zoom: 50%;" />
+
+##### DATA CLEANING CYCLE5
+
+<img src="images\image-20210923114117396.png" alt="image-20210923114117396" style="zoom:50%;" />
+
+###### IMPORT DATASET
+
+<img src="images\image-20210923114222432.png" alt="image-20210923114222432" style="zoom: 67%;" />
+
+**DISPLAY FIRST FIVE ROWS OF DATASET**
+
+<img src="images\image-20210923114243221.png" alt="image-20210923114243221" style="zoom: 67%;" />
+
+###### MERGE DATASET
+
++ Merging the dataset is the process of combining two datasets in one.
+
+  <img src="images\image-20210923114324243.png" alt="image-20210923114324243" style="zoom: 67%;" />
+
+  link: [https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.merge.html](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.merge.html)
+
+###### REBUILD MISSING DATA
+
++ To find and fill the missing data in the dataset we will use another function. 
+
++ **Using isnull() /isna() function:**
+
+  <img src="images\image-20210923114441888.png" alt="image-20210923114441888" style="zoom:67%;" />
+
++ **Using isna(). sum()**
+
+  <img src="images\image-20210923114508838.png" alt="image-20210923114508838" style="zoom:67%;" />
+
++ **De-Duplicate** 
+
++ De-Duplicate means remove all duplicate values data.duplicated()
+
+  <img src="images\image-20210923114819036.png" alt="image-20210923114819036" style="zoom:67%;" />
+
++ **DataFrame.fillna()** 
+
++ Fill NA/NaN values using the specified method.
+
+  <img src="images\image-20210923114901555.png" alt="image-20210923114901555" style="zoom:67%;" />
+
+  link: [https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.fillna.html](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.fillna.html)
+
++ If a dataset contains duplicate values it can be removed using the drop_duplicates() function.
+
+  <img src="images\image-20210923114957870.png" alt="image-20210923114957870" style="zoom:67%;" />
+
+  link: [https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.drop_duplicates.html](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.drop_duplicates.html)
+
+###### STANDARDIZATION AND NORMALIZATION
+
+<img src="images\image-20210923115306712.png" alt="image-20210923115306712" style="zoom:67%;" />
+
+Case A (correct) : 
+
+1. Import Data 
+2. Split Data into training and test sets 
+3. Scale the training and test sets together using MinMaxScaler. 
+4. Visualization
+
+Case B: 
+
+1. Import Data 
+2. Split Data into training and test sets 
+3. Scale training set using MinMaxScaler. 
+4. Rescale the test set separately using MinMaxScaler. 
+5. Visualization
+
+<img src="images\image-20210923122948520.png" alt="image-20210923122948520"  />
+
+##### VERIFY AND ENRICH
+
++ We should verify the dataset and validate its accuracy. 
++ We have to check that the data cleaned so far is making any sense. 
++ If the data is incomplete we have to enrich the data. 
++ approaching the clients again, re-interviewing people, etc.
+
+**DATA TRANSFORMATION**
+
++ Query 
++ Sort 
++ Select Columns
++ Select Distinct 
++ Assign
++ Group by 
++ Joint
+
+### Grammar of Data
+
+#### PANDAS
+
++ Pandas is well suited for many different kinds of data: 
++ Tabular data with heterogeneously-typed columns, as in an SQL table or Excel spreadsheet 
++ Ordered and unordered (not necessarily fixed-frequency) time series data. 
++ Arbitrary matrix data with row and column labels 
++ Any other form of observational / statistical data sets.
+
+<img src="images\image-20210923124307637.png" alt="image-20210923124307637" style="zoom:67%;" />
+
+<img src="images\image-20210923124326974.png" alt="image-20210923124326974" style="zoom:67%;" />
+
+#### GRAMMAR OF DATA
+
++ [If you need to find a Data Related work!!](https://www.w3resource.com/python-exercises/pandas/index.php)
+
++ Why bother? 
++ learn how to do core data manipulations, no matter what the system is. 
++ one off questions: google, stack-overflow, http://chrisalbon.com
+
+##### BEST PRACTICE
+
++ Go to notebook: grammarofdata.ipynb
+
+##### HOW TO CREATE A SERIES FROM A LIST, NUMPY ARRAY AND DICT?
+
+<img src="images\image-20210923124555398.png" alt="image-20210923124555398" style="zoom:67%;" />
+
+##### HOW TO COMBINE MANY SERIES TO FORM A DATAFRAME?
+
+<img src="images\image-20210923124721982.png" alt="image-20210923124721982" style="zoom:67%;" />
+
+##### HOW TO GET USEFUL INFOS
+
+<img src="images\image-20210923124737635.png" alt="image-20210923124737635" style="zoom: 80%;" />
+
+##### GROUPBY
+
++ Example: Candidates
+
+  <img src="images\image-20210923124806727.png" alt="image-20210923124806727" style="zoom:67%;" />
+
++ Contributors
+
+  <img src="images\image-20210923124856354.png" alt="image-20210923124856354" style="zoom:80%;" />
+
++ Groupby: 
+
+  + Splitting the data into groups based on some criteria 
+  + Applying a function to each group independently 
+  + Combining the results into a data structure
+
+  <img src="images\image-20210923124929496.png" alt="image-20210923124929496"  />
+
+##### MERGE
+
++ Merge: 
++ Combine tables on a common key-value
+
+<img src="images\image-20210923125017260.png" alt="image-20210923125017260"  />
+
+### QUESTION 
+
+#### 1. MAPPING
+
+***Answer: B C A***
+
+<img src="images\image-20210923125039313.png" alt="image-20210923125039313" style="zoom:80%;" />
+
+#### 2. How many of the given statements are the correct reason why data cleansing is critical： 
+
+Error-Free Data 
+
+Data Quality 
+
+Accurate and Efficient Data 
+
+Complete Data 
+
+Maintains Data Consistency
+
+#### 3. FILL IN A BLANK
+
++ How to get useful infos of a Dataframe SER 
++ SER. describe()
+
+<img src="images\image-20210923125355914.png" alt="image-20210923125355914" style="zoom:80%;" />
