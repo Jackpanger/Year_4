@@ -1627,3 +1627,267 @@ $$
 Feature maps are hard to design well, so next time we’ll see how to *learn* nonlinear feature maps directly using neural networks...
 
 <img src="images\image-20210919005138751.png" alt="image-20210919005138751" style="zoom:80%;" />
+
+## Lecture 4
+
+### Content
+
+>TBD
+
+### Binary Classification with a Linear Model
+
+- Classification: Predict a discrete-valued target
+- Binary classification: Targets $t \in\{-1,+1\}$
+- Linear model:
+$$
+\begin{array}{l}
+z=\mathbf{w}^{\top} \mathbf{x}+b \\
+y=\operatorname{sign}(z)
+\end{array}
+$$
+- Question: How should we choose $\mathbf{w}$ and $b$ ?
+
+#### Zero-One Loss
+
+- We can use the $0-1$ loss function, and find the weights that minimize it over data points
+$$
+\begin{aligned}
+\mathcal{L}_{0-1}(y, t) &=\left\{\begin{array}{ll}
+0 & \text { if } y=t \\
+1 & \text { if } y \neq t
+\end{array}\right.\\
+&=\mathbb{I}\{y \neq t\}
+\end{aligned}
+$$
+- But minimizing this loss is computationally difficult, and it can't distinguish different hypotheses that achieve the same accuracy.
+- We investigated some other loss functions that are easier to minimize, e.g., logistic regression with the cross-entropy loss $\mathcal{L}_{\mathrm{CE}}$.
+- Let's consider a different approach, starting from the geometry of binary classifiers.
+
+#### Separating Hyperplanes
+
+<img src="images\image-20210927170426624.png" alt="image-20210927170426624" style="zoom:67%;" />
+
+Suppose we are given these data points from two different classes and want to find a linear classifier that separates them.
+
+<img src="images\image-20210927170502486.png" alt="image-20210927170502486" style="zoom:67%;" />
+
+- The decision boundary looks like a line because $\mathbf{x} \in \mathbb{R}^{2}$, but think about it as a $D-1$ dimensional hyperplane.
+- Recall that a hyperplane is described by points $\mathbf{x} \in \mathbb{R}^{D}$ such that $f(\mathbf{x})=\mathbf{w}^{\top} x+b=0$
+
+<img src="images\image-20210927170533866.png" alt="image-20210927170533866" style="zoom:67%;" />
+
+- There are multiple separating hyperplanes, described by different parameters $(\mathbf{w}, b)$
+
+  <img src="images\image-20210927170620034.png" alt="image-20210927170620034" style="zoom:67%;" />
+
+### Optimal Separating Hyperplane
+
+**Optimal Separating Hyperplane:** A hyperplane that separates two classes and maximizes the distance to the closest point from either class, i.e., maximize the **margin** of the classifier.
+
+<img src="images\image-20210927170718842.png" alt="image-20210927170718842"  />
+
+Intuitively, ensuring that a classifier is not too close to any data points leads to better generalization on the test data.
+
+#### Geometry of Points and Planes
+
+<img src="images\image-20210927170825622.png" alt="image-20210927170825622" style="zoom: 80%;" />
+
+- Recall that the decision hyperplane is orthogonal (perpendicular) to $\mathbf{w}$.
+- The vector $\mathbf{w}^{*}=\frac{\mathbf{w}}{\|\mathbf{w}\|_{2}}$ is a unit vector pointing in the same direction as $\mathbf{w}$.
+- The same hyperplane could equivalently be defined in terms of $\mathrm{w}^{*}$.
+
+The (signed) distance of a point $\mathbf{x}^{\prime}$ to the hyperplane is
+$$
+\frac{\mathbf{w}^{\top} \mathbf{x}^{\prime}+b}{\|\mathbf{w}\|_{2}}
+$$
+
+#### Maximizing Margin as an Optimization Problem
+
+- Recall: the classification for the $i$-th data point is correct when
+$$
+\operatorname{sign}\left(\mathbf{w}^{\top} \mathbf{x}^{(i)}+b\right)=t^{(i)}
+$$
+- This can be rewritten as
+$$
+t^{(i)}\left(\mathbf{w}^{\top} \mathbf{x}^{(i)}+b\right)>0
+$$
+- Enforcing a margin of $C$ :
+
+$$
+t^{(i)} \cdot \underbrace{\frac{\left(\mathbf{w}^{\top} \mathbf{x}^{(i)}+b\right)}{\|\mathbf{w}\|_{2}}}_{\text {signed distance }} \geq C
+$$
+
+Max-margin objective:
+$$
+\begin{array}{l}
+\max _{\mathbf{w}, b} C \\
+\text { s.t. } \frac{t^{(i)}\left(\mathbf{w}^{\top} \mathbf{x}^{(i)}+b\right)}{\|\mathbf{w}\|_{2}} \geq C \quad i=1, \ldots, N
+\end{array}
+$$
+Plug in $C=1 /\|\mathbf{w}\|_{2}$ and simplify:
+$$
+\underbrace{\frac{t^{(i)}\left(\mathbf{w}^{\top} \mathbf{x}^{(i)}+b\right)}{\|\mathbf{w}\|_{2}} \geq \frac{1}{\|\mathbf{w}\|_{2}}}_{\text {geometric margin constraint }} \quad \Longleftrightarrow \underbrace{t^{(i)}\left(\mathbf{w}^{\top} \mathbf{x}^{(i)}+b\right) \geq 1}_{\text {algebraic margin constraint }}
+$$
+Equivalent optimization objective:
+$$
+\begin{array}{l}
+\min \|\mathbf{w}\|_{2}^{2} \\
+\text { s.t. } t^{(i)}\left(\mathbf{w}^{\top} \mathbf{x}^{(i)}+b\right) \geq 1 \quad i=1, \ldots, N
+\end{array}
+$$
+<img src="images\image-20210927171019995.png" alt="image-20210927171019995" style="zoom:67%;" />
+
+Algebraic max-margin objective:
+$$
+\begin{array}{l}
+\min _{\mathbf{w}, b}\|\mathbf{w}\|_{2}^{2} \\
+\text { s.t. } t^{(i)}\left(\mathbf{w}^{\top} \mathbf{x}^{(i)}+b\right) \geq 1 \quad i=1, \ldots, N
+\end{array}
+$$
+
+- Observe: if the margin constraint is not tight for $\mathbf{x}^{(i)}$, we could remove it from the training set and the optimal $\mathbf{w}$ would be the same.
+- The important training examples are the ones with algebraic margin 1 , and are called **support vectors**.
+- Hence, this algorithm is called the (hard) **Support Vector Machine (SVM) (or Support Vector Classifier)**.
+- SVM-like algorithms are often called **max-margin** or **large-margin**.
+
+#### Non-Separable Data Points
+
+How can we apply the max-margin principle if the data are **not** linearly separable? 
+
+<img src="images\image-20210927171306088.png" alt="image-20210927171306088" style="zoom:67%;" />
+
+#### Maximizing Margin for Non-Separable Data Points
+
+<img src="images\image-20210927171334909.png" alt="image-20210927171334909" style="zoom:67%;" />
+
+Main Idea:
+- Allow some points to be within the margin or even be misclassified; we represent this with **slack variables** $\xi_{i}$.
+- But constrain or penalize the total amount of slack.
+
+- Soft margin constraint:
+$$
+\frac{t^{(i)}\left(\mathbf{w}^{\top} \mathbf{x}^{(i)}+b\right)}{\|\mathbf{w}\|_{2}} \geq C\left(1-\xi_{i}\right)
+$$
+for $\xi_{i} \geq 0$
+- Penalize $\sum_{i} \xi_{i}$
+
+**Soft-margin SVM** objective:
+$$
+\begin{array}{ll}
+\min _{\mathbf{w}, b, \xi} &\frac{1}{2}\|\mathbf{w}\|_{2}^{2}+\gamma \sum_{i=1}^{N} \xi_{i}  \\
+\text { s.t. } &t^{(i)}\left(\mathbf{w}^{\top} \mathbf{x}^{(i)}+b\right) \geq 1-\xi_{i} & i=1, \ldots, N \\
+& \xi_{i} \geq 0 & i=1, \ldots, N
+\end{array}
+$$
+- $\gamma$ is a hyperparameter that trades off the margin with the amount of slack.
+
+- For $\gamma=0$, we'll get $\mathbf{w}=0$. (Why?)
+
+  <Span style="color:rgb(130,50,150)">***PN: $\xi$ can be large enough to contain every points, so w will be 0 to make this minimum.***</span>
+
+- As $\gamma \rightarrow \infty$ we get the hard-margin objective.
+
+- Note: it is also possible to constrain $\sum_{i} \xi_{i}$ instead of penalizing it.
+
+#### From Margin Violation to Hinge Loss
+
+Let's simplify the soft margin constraint by eliminating $\xi_{i}$. Recall:
+$$
+\begin{array}{ll}
+t^{(i)}\left(\mathbf{w}^{\top} \mathbf{x}^{(i)}+b\right) \geq 1-\xi_{i} & i=1, \ldots, N \\
+\xi_{i} \geq 0 & i=1, \ldots, N
+\end{array}
+$$
+- Rewrite as $\xi_{i} \geq 1-t^{(i)}\left(\mathbf{w}^{\top} \mathbf{x}^{(i)}+b\right)$.
+- **Case 1:** $1-t^{(i)}\left(\mathbf{w}^{\top} \mathbf{x}^{(i)}+b\right) \leq 0$
+  - The smallest non-negative $\xi_{i}$ that satisfies the constraint is $\xi_{i}=0$.
+- **Case 2:** $1-t^{(i)}\left(\mathbf{w}^{\top} \mathbf{x}^{(i)}+b\right)>0$
+  - The smallest $\xi_{i}$ that satisfies the constraint is $\xi_{i}=1-t^{(i)}\left(\mathbf{w}^{\top} \mathbf{x}^{(i)}+b\right)$.
+- Hence, $\xi_{i}=\max \left\{0,1-t^{(i)}\left(\mathbf{w}^{\top} \mathbf{x}^{(i)}+b\right)\right\}$.
+- Therefore, the slack penalty can be written as
+
+$$
+\sum_{i=1}^{N} \xi_{i}=\sum_{i=1}^{N} \max \left\{0,1-t^{(i)}\left(\mathbf{w}^{\top} \mathbf{x}^{(i)}+b\right)\right\}
+$$
+
+If we write $y^{(i)}(\mathbf{w}, b)=\mathbf{w}^{\top} \mathbf{x}+b$, then the optimization problem can be written as
+$$
+\min _{\mathbf{w}, b, \xi} \sum_{i=1}^{N} \max \left\{0,1-t^{(i)} y^{(i)}(\mathbf{w}, b)\right\}+\frac{1}{2 \gamma}\|\mathbf{w}\|_{2}^{2}
+$$
+- The loss function $\mathcal{L}_{\mathrm{H}}(y, t)=\max \{0,1-t y\}$ is called the hinge loss.
+- The second term is the $L_{2}$-norm of the weights.
+- Hence, the soft-margin SVM can be seen as a linear classifier with hinge loss and an $L_{2}$ regularizer.
+
+If we write $y^{(i)}(\mathbf{w}, b)=\mathbf{w}^{\top} \mathbf{x}+b$, then the optimization problem can be written as
+$$
+\min _{\mathbf{w}, b, \xi} \sum_{i=1}^{N} \max \left\{0,1-t^{(i)} y^{(i)}(\mathbf{w}, b)\right\}+\frac{1}{2 \gamma}\|\mathbf{w}\|_{2}^{2}
+$$
+- The loss function $\mathcal{L}_{\mathrm{H}}(y, t)=\max \{0,1-t y\}$ is called the hinge loss.
+- The second term is the $L_{2}$-norm of the weights.
+- Hence, the soft-margin SVM can be seen as a linear classifier with hinge loss and an $L_{2}$ regularizer.
+
+#### SVM loss
+
+<img src="images\image-20210927171950079.png" alt="image-20210927171950079" style="zoom:80%;" />
+
+<img src="images\image-20210927172034918.png" alt="image-20210927172034918" style="zoom:80%;" />
+
+<img src="images\image-20210927172049285.png" alt="image-20210927172049285" style="zoom:80%;" />
+
+<img src="images\image-20210927172102951.png" alt="image-20210927172102951" style="zoom: 80%;" />
+
+<img src="images\image-20210927172156980.png" alt="image-20210927172156980" style="zoom: 80%;" />
+
+<img src="images\image-20210927172208528.png" alt="image-20210927172208528" style="zoom: 80%;" />
+
+<img src="images\image-20210927172222391.png" alt="image-20210927172222391" style="zoom: 80%;" />
+
+<img src="images\image-20210927172236650.png" alt="image-20210927172236650" style="zoom: 80%;" />
+
+<img src="images\image-20210927172341117.png" alt="image-20210927172341117" style="zoom: 80%;" />
+
+[0,+inf]
+
+<img src="images\image-20210927172357259.png" alt="image-20210927172357259" style="zoom: 80%;" />
+
+### Softmax
+
+<img src="images\image-20210927172504468.png" alt="image-20210927172504468" style="zoom:80%;" />
+
+<img src="images\image-20210927172523099.png" alt="image-20210927172523099" style="zoom:80%;" />
+
+<img src="images\image-20210927172536587.png" alt="image-20210927172536587" style="zoom:80%;" />
+
+<img src="images\image-20210927172550303.png" alt="image-20210927172550303" style="zoom:80%;" />
+
+<img src="images\image-20210927172602967.png" alt="image-20210927172602967" style="zoom:80%;" />
+
+<img src="images\image-20210927172613418.png" alt="image-20210927172613418" style="zoom:80%;" />
+
+<img src="images\image-20210927172625224.png" alt="image-20210927172625224" style="zoom:80%;" />
+
+<img src="images\image-20210927172639940.png" alt="image-20210927172639940" style="zoom:80%;" />
+
+<img src="images\image-20210927172658754.png" alt="image-20210927172658754" style="zoom:80%;" />
+
+<img src="images\image-20210927172713602.png" alt="image-20210927172713602" style="zoom:80%;" />
+
+<img src="images\image-20210927172726888.png" alt="image-20210927172726888" style="zoom:80%;" />
+
+### Softmax & SVM
+
+<img src="images\image-20210927172750275.png" alt="image-20210927172750275" style="zoom:80%;" />
+$$
+\begin{align*}
+\begin{array}{l}
+\begin{array}{ll}
+L_{i}=-\log \left(\frac{e^{s_{y_{i}}}}{\sum_{j} e^{s_{j}}}\right) & L_{i}=\sum_{j \neq y_{i}} \max \left(0, s_{j}-s_{y_{i}}+1\right) \\
+\hline \text { assume scores: } & \text { Q: Suppose I take a datapoint } \\
+{[10,-2,3]} & \text { and I jiggle a bit (changing its } \\
+{[10,9,9]} & \text { score slightly). What happens to } \\
+{[10,-100,-100]} & \text { the loss in both cases? } \\
+\text { and } y_{i}=0 &
+\end{array}
+\end{array}
+\end{align*}
+$$

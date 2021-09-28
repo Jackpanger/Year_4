@@ -835,7 +835,7 @@ $$
 
   y(x, w) = 1 , if x in class 1 (C1) 
 
-  y(x, w) = - 1, if x in class 2 (C2)
+  y(x, w) = -1, if x in class 2 (C2)
 
   **Example** 
 
@@ -964,3 +964,9 @@ Formulating neural network solutions for particular problems is a multi-stage pr
 6. If the network still doesn’t perform well enough, go back to stage 2 and try harder 
 7. If the network still doesn’t perform well enough, go back to stage 1 and try harder 
 8. Problem solved – or not
+
+## Lecture 4
+
+### Content
+
+>TBD
