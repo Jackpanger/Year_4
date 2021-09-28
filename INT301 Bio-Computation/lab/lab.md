@@ -221,5 +221,163 @@ net(test)
      0     1
 ```
 
+## Lab 4
 
+#### Demo
 
+##### PerceptronExample()
+
+```matlab
+function PerceptronExample 
+% Rosenblatt's Perecptron
+% References :
+% Neural Networks for Pattern Recognition By C. Bishop
+
+% clear the screen
+clc
+%============================================
+% Generate 2 dimensions linear separable data 
+%===========================================
+
+% You may change the size of the data from here or input your own data
+%   note that the drawing is for two dimensions only, hence you need to 
+%   modify the code for different data.
+mydata = rand(500,2);  % random generate (500,2) data
+% Separate the data into two classes, acquire data with distance larger than 0.012 between the first column and the second column.
+acceptindex = abs(mydata(:,1)-mydata(:,2))>0.012;
+mydata = mydata(acceptindex,:); % data
+myclasses = mydata(:,1)>mydata(:,2); % labels
+[m n]=size(mydata);
+
+% The next two lines divide the data into training and testing parts
+%training data: first 400 rows
+x=mydata(1:400,:);  y=myclasses(1:400);
+% test data : the rest of the rows
+xt=mydata(401:m,:); yt=myclasses(401:m);
+%=====================================
+% Train the perceptron
+%=====================================
+% PerecptronTrn function will be analyzed below
+[w,b,pass] = PerecptronTrn(x,y); 
+Iterations=pass
+
+%=====================================
+% Test
+%=====================================
+% PerecptronTst function will be analyzed below
+e=PerecptronTst(xt,yt,w,b);
+% num2str() transform number to string
+disp(['Test_Errors=' num2str(e) '     Test Data Size= ' num2str(m-400)])
+
+%=====================================
+% Draw the result (sparating hyperplane)
+%=====================================
+ l=y;
+ figure;
+ hold on % keep the plot
+ plot(x(l,1),x(l,2),'k.' );
+ plot(x(~l,1),x(~l,2),'b.');
+ plot([0,1],[0,1],'r-')
+ axis([0 1 0 1]), axis square, grid on
+ drawnow
+```
+
+##### PerecptronTrn()
+
+```matlab
+function [w,b,pass]=PerecptronTrn(x,y)
+% %Rosenblatt's Perecptron
+tic % combine with toc, measure the time of the process 
+[l,p]=size(x);
+w=zeros(p,1); % initialize weights with all zero.
+b=0;          % initialize bias
+ier=1;        % initialize a misclassification indicator
+pass=0;       % number of iterations
+n=0.5;        % learning rate
+r=max(sqrt(sum(x))); % max norm
+iter = 0;     % iteration index
+while ier==1 %repeat until no error
+       ier=0; iter = iter + 1;
+       e=0; % number of training errors
+       for i=1:l  % a pass through x           
+           xx=x(i,:); % current data xx
+           ey=xx*w+b; % estimated y
+           if ey>=0.5 % threshold (ey=1 if ey>=0.5 else 0)
+              ey=1;
+           else
+              ey=0;
+           end
+           if y(i)~=ey % if y not equals ey
+              er=y(i)-ey;      % error difference
+              w=w'+(er*n)*x(i,:);  % can be written as w = w'+(er*n)*xx;    
+              e=e+1 ;         % number of training errors
+              w=w';   % 'means transpose
+           end
+       end
+       e_list(iter)=e; % a list to record each error
+       ee=e;    % number of training errors
+       if ee>0  % continue if there is still errors
+          ier=1;           
+       end
+       pass=pass+1; % stop after 10000 iterations
+       if pass==10000
+          ier=0;
+          pass=0;
+       end
+end
+
+figure; % create a new window to draw someting;
+plot([0:length(e_list)-1], e_list, '-ko' , 'LineWidth', 0.1); % plot the error during the training process
+xlabel('iteration')
+ylabel('e-training')
+
+disp(['Training_Errors=' num2str(e) '     Training data Size=' num2str(l)])
+toc % measure the time
+```
+
+##### PerecptronTst()
+
+```matlab
+function e=PerecptronTst(x,y,w,b)
+%==========================================
+% Testing phase
+%==========================================
+tic
+[l,p]=size(x);
+e=0; % number of test errors
+for i=1:l          
+    xx=x(i,:); % take one row
+    ey=xx*w+b; % apply the perceptron classification rule
+    if ey>=0.5 
+       ey=1;
+    else
+       ey=0;
+    end
+    if y(i)~=ey
+       e=e+1;
+    end
+end
+toc
+```
+
+### Exercise 
+
+#### Exercise 1
+
+>Related files: PerceptronExercise1.m, PerecptronTrnExercise1.m, PerecptronTstExercise1.m
+>
+>Usage:
+>
+>```matlab
+>PerceptronExercise1();
+>```
+
+#### Exercise 2
+
+> Related files: PerceptronExercise2.m, PerecptronTrnExercise2.m, PerecptronTstExercise2.m
+>
+> Usage:
+>
+> ```matlab
+> PerceptronExercise2();
+> ```

@@ -970,3 +970,311 @@ Formulating neural network solutions for particular problems is a multi-stage pr
 ### Content
 
 >TBD
+
+### The Gradient Descent Rule
+
+- Perceptron rule fails <span style="color:orange">**if data is not linearly separable**</span>
+- <span style="color:red">**Idea:** </span>uses gradient descent to search the <span style="color:blue">**hypothesis space**</span>
+  - perceptron rule cannot be used (not differentiable)
+  - hence, an <span style="color:blue">**unthresholded linear unit**</span> is an appropriate error measure:
+$$
+E(w)=\frac{1}{2} \sum_{e}\left(y_{e}-o_{e}\right)^{2}
+$$
+- To understand gradient descent, it is helpful to visualize the entire hypothesis space with
+  - all possible weight vectors
+  - associated E values
+
+The objective is to minimize the following error:
+$$
+E(\mathrm{w})=\frac{1}{2} \sum_{e}\left(y_{e}-o_{e}\right)^{2}
+$$
+- The training is a process of minimizing the error $E(w)$ in the steepest direction (most rapid decrease), <span style="color:red">**that is in direction opposite to the gradient**</span>
+$$
+\nabla E(w)=\left[\partial E / \partial w_{0}, \partial E / \partial w_{1}, \ldots, \partial E / \partial w_{d}\right]
+$$
+​		which leads to the <span style="color:blue">**that is in direction opposite to the gradient**</span>:
+$$
+w_{i}=w_{i}-\eta \partial E / \partial w_{i}
+$$
+
+#### Error Surface
+
++ the axes $w_0,w_1$ represent possible values for the two weights of a simple linear unit
+
+  <img src="images\image-20210928162248479.png" alt="image-20210928162248479" style="zoom:80%;" />
+
+error surface must be **parabolic** with a **single global minimum**
+
+#### Moving Downhill: Move in direction of negative derivative
+
+<img src="images\image-20210928162337542.png" alt="image-20210928162337542" style="zoom: 67%;" />
+
+<img src="images\image-20210928162434035.png" alt="image-20210928162434035" style="zoom: 67%;" />
+
+#### Illustration of Gradient Descent
+
+<img src="images\image-20210928162508604.png" alt="image-20210928162508604" style="zoom: 67%;" />
+
+<img src="images\image-20210928162528226.png" alt="image-20210928162528226" style="zoom: 67%;" />
+
+<img src="images\image-20210928162549390.png" alt="image-20210928162549390" style="zoom: 67%;" />
+
+<img src="images\image-20210928162620541.png" alt="image-20210928162620541" style="zoom: 67%;" />
+
+- The weight update can be derived as follows:
+$$
+\begin{aligned}
+\partial E / \partial w &=\partial\left(\frac{1}{2} \sum_{e}\left(y_{e}-o_{e}\right)^{2}\right) / \partial w_{i} \\
+&=\frac{1}{2} \sum_{e} \partial\left(y_{e}-o_{e}\right)^{2} / \partial w_{i} \\
+&=\frac{1}{2} \sum_{e} 2\left(y_{e}-o_{e}\right) \partial\left(y_{e}-o_{e}\right) / \partial w_{i} \\
+&=\sum_{e}\left(y_{e}-o_{e}\right) \partial\left(y_{e}-w_{i} x_{i e}\right) / \partial w_{i} \\
+&=\sum_{e}\left(y_{e}-o_{e}\right)\left(-x_{i e}\right)
+\end{aligned}
+$$
+where $x_{i e}$ denotes the $i$-th component of the example $e$. The gradient descent training rule becomes:
+$$
+w_{i}=w_{i}+\eta \sum_{e}\left(y_{e}-o_{e}\right) x_{i e}
+$$
+
+### Gradient Descent Learning Algorithm
+
+- Initialization: Examples $\left\{\left(x_{e}, y_{e}\right)\right\}_{e=1}^{N}$, initial weights $w_{i}$ set to small random values, learning rate parameter $\eta$
+- **Repeat**
+  for each training example $\left(x_{e}, y_{e}\right)$
+  - calculate the network output: $o_{e}=\sum_{i=0}^{d} w_{i} x_{i e}$
+  - if the Perceptron does not respond correctly, compute weight corrections:
+$$
+\Delta w_{i}=\Delta w_{i}+\eta\left(y_{e}-o_{e}\right) x_{i e}
+$$
+​		update the weights with the <span style="color:red">**accumulated error**</span> from all examples
+$$
+w_{i}=w_{i}+\Delta w_{i} \quad \begin{array}{l}
+\text{ Gradient Descent Rule} \\
+\end{array}
+$$
+​		 **until** termination condition is satisfied.
+
+#### Example
+
+- Suppose an example of Perceptron which accepts two inputs $x_{1}$ and $x_{2}$ with weights $w_{1}=0.5$ and $w_{2}=0.3$ and $w_{0}=-1$, learning rate $=1$.
+- Let the example is given: $x_{1}=2, x_{2}=1, y=0$ The network output of the Perceptron is :
+$$
+o=2 * 0.5+1 * 0.3-1=0.3
+$$
+- The weight updates according to the gradient descent algorithm will be:
+
+$$
+\begin{array}{l}
+\Delta w_{1}=(0-0.3) * 2=-0.6 \\
+\Delta w_{2}=(0-0.3) * 1=-0.3 \\
+\Delta w_{0}=(0-0.3) * 1=-0.3
+\end{array}
+$$
+
+#### Example
+
+- Let another example is given: $x_{1}=1, x_{2}=2, y=1$
+- The network output of the Perceptron is :
+$$
+o=1 * 0.5+2 * 0.3-1=0.1
+$$
+The weight updates according to the gradient descent algorithm will be:
+$$
+\begin{array}{l}
+\Delta w_{1}=-0.6+(1-0.1) * 1=0.3 \\
+\Delta w_{2}=-0.3+(1-0.1) * 2=1.5 \\
+\Delta w_{0}=-0.3+(1-0.1) * 1=0.6
+\end{array}
+$$
+If there are no more examples, the weights will be modified as follows:
+$$
+\begin{array}{l}
+w_{1}=0.5+0.3=0.8 \\
+w_{2}=0.3+1.5=1.8 \\
+w_{n}=-1+0.6=1.6
+\end{array}
+$$
+
+### Incremental gradient descent
+
+The gradient descent rule faces two difficulties in practice: 
+
+\- it converges very slowly
+
+\- if there are multiple local minima in the error surface, then there is no guarantee that it will find the global minimum
+
+- That is why, a <span style="color:red">**stochastic version**</span> called <span style="color:red">**incremental gradient descent**</span> rule is developed to overcome these difficulties. <span style="color:blue">**Whereas the gradient descent rule updates the weights after calculating the whole error accumulated from all examples, the incremental version approximates the gradient descent error decrease by updating the weights after each training example.**</span>
+
+- Incremental gradient descent is implemented
+$$
+w_{i}=w_{i}+\eta\left(y_{e}-o_{e}\right) x_{i e} \quad \text { where } \quad o_{e}=\sum_{i=0}^{d} w_{i} x_{i e}
+$$
+#### Incremental Gradient Descent Learning Algorithm
+
+Initialization: Examples $\left\{\left(x_{e}, y_{e}\right)\right\}_{e=1}^{N}$, initial weights $w_{i}$ set to small random values, learning rate parameter $\eta$
+
+**Repeat**
+for each training example $\left( x_{e}, y_{e}\right)$
+
+- calculate the network output:
+$$
+o_{e}=\sum_{i=0}^{d} w_{i} x_{i e}
+$$
+- If the Perceptron does not respond correctly update the weights:
+$$
+w_{i}=w_{i}+\eta\left(y_{e}-o_{e}\right) x_{i e}
+$$
+**until** termination condition is satisfied.
+
+### Sigmoidal Perceptrons
+
+- The simple single-layer Perceptrons with threshold or linear activation functions are not generalizable to more powerful learning mechanisms like multilayer neural networks.
+That is why, single-layer Perceptrons with sigmoidal activation functions are developed.
+- The sigmoidal Perceptron produces output:
+
+$$
+o=\sigma(S)=\frac{1}{1+e^{-S}}
+$$
+
+<img src="images\image-20210928165957967.png" alt="image-20210928165957967" style="zoom: 80%;" />
+
+​	 	where:
+$$
+\begin{align*}
+S=\sum_{i=0}^{d} w_{i} x_{x}
+\end{align*}
+$$
+
+#### Training Sigmoidal Perceptrons
+
+- The gradient descent rule for training sigmoidal Perceptrons is again:
+$$
+w_{i}=w_{i}-\eta \partial E / \partial w_{i}
+$$
+- The difference is in the error derivative $\partial E / \partial w_{i}$ which due to the use of the sigmoidal function $\sigma(s)$ becomes:
+$$
+\begin{array}{l}
+\partial E / \partial w_{i}=\partial\left((1 / 2) \Sigma_{e}\left(y_{e}-o_{e}\right)^{2}\right) / \partial w_{i} \\
+=(1 / 2) \Sigma_{e} \partial\left(y_{e}-o_{e}\right)^{2} / \partial w_{i} \\
+=(1 / 2) \Sigma_{e} 2\left(y_{e}-o_{e}\right) \partial\left(y_{e}-o_{e}\right)/\partial w_{i} \\
+=\Sigma_{e}\left(y_{e}-o_{e}\right) \partial\left(y_{e}-\sigma(s)\right) / \partial w_{i} \\
+=\Sigma_{e}\left(y_{e}-o_{e}\right) \sigma^{\prime}(s)\left(-x_{i e}\right)
+\end{array}
+$$
+where $x_{i e}$ denotes the $i$-th component of the example
+
+- The Gradient descent training rule for training sigmoidal Perceptrons is:
+$$
+w_{i}=w_{i}+\eta \sum_{e}\left(y_{e}-o_{e}\right) \sigma^{\prime}(S) x_{i e}
+$$
+where:
+$$
+\sigma^{\prime}(S)=\sigma(S)(1-\sigma(S))
+$$
+
+#### Gradient Descent Learning Algorithm for Sigmoidal Perceptrons
+
+- Initialization: Examples $\left\{\left(x_{e}, y_{e}\right)\right\}_{e=1}^{N}$, initial weights $w_{i}$ set to small random values, learning rate parameter $\eta$
+- **Repeat**
+  for each training example $\left(x_{e}, y_{e}\right)$
+  - calculate the network output: $o=\sigma(s)$ where $s=\sum_{i=0}^{d} w_{i} x_{i e}$
+  - if the Perceptron does not respond correctly compute weight corrections:
+$$
+\Delta w_{i}=\Delta w_{i}+\eta\left(y_{e}-o_{e}\right) \sigma(s)(1-\sigma(s)) x_{i e}
+$$
+​		update the weights with the <span style="color:red">**accumulated error**</span> from all examples $w_{i}=w_{i}+\Delta w_{i}$
+​        **until** termination condition is satisfied.
+
+##### Example
+
+- Suppose an example of Perceptron which accepts two inputs $x_{1}$ and $x_{2}$ with weights $w_{1}=0.5$ and $w_{2}=0.3$ and $w_{0}=-1$ learning rate $=1$
+- Let the following example is given: $x_{1}=2, x_{2}=1, y=0$ The output of the Perceptron is :
+$$
+o=\sigma(-1+2 * 0.5+1 * 0.3)=\sigma(0.3)=0.5744
+$$
+- The weight updates according to the gradient descent algorithm will be:
+
+$$
+\begin{array}{l}
+\Delta w_{0}=(0-0.5744) * 0.5744 *(1-0.5744) * 1=-0.1404 \\
+\Delta w_{1}=(0-0.5744) * 0.5744 *(1-0.5744) * 2=-0.2808 \\
+\Delta w_{2}=(0-0.5744) * 0.5744 *(1-0.5744) * 1=-0.1404
+\end{array}
+$$
+
+##### Example
+
+Let another example is given: $x_{1}=1, x_{2}=2, y=1$ The output of the Perceptron is :
+$$
+o=\sigma(-1+1 * 0.5+2 * 0.3)=\sigma(0.1)=0.525
+$$
+The weight updates according to the gradient descent algorithm will be:
+$$
+\begin{array}{l}
+\Delta W_{0}=-0.1404+(1-0.525) * 0.525 *(1-0.525) * 1=-0.0219 \\
+\Delta W_{1}=-0.2808+(1-0.525) * 0.525 *(1-0.525) * 1=-0.1623 \\
+\Delta W_{2}=-0.1404+(1-0.525) * 0.525 *(1-0.525) * 2=0.0966
+\end{array}
+$$
+If there are no more examples in the batch, the weights will be modified as follows:
+$$
+\begin{array}{l}
+w_{0}=-1+(-0.0219)=-1.0219 \\
+w_{1}=0.5+(-0.1623)=0.3966 \\
+w_{2}=0.3+0.0966=0.3966
+\end{array}
+$$
+
+#### Incremental Gradient Descent Learning Algorithm for Sigmoidal Perceptrons
+
+**Initialization:**
+Examples $\left\{\left(x_{e} ,y_{e}\right)\right\}$, initial weights $w_{i}$ set to small random values, learning rate parameter $\eta$
+**Repeat**
+for each training example $\left(x_{e} ,y_{e}\right)$
+
+- calculate the network output: $o=\sigma(s)$
+  where $s=\sum_{i=0}^{d} w_{i} x_{i e}$
+
+  If the Perceptron does not respond correctly update the weights:  $\quad w_{i}=w_{i}+\eta\left(y_{e}-o_{e}\right) \sigma(s)(1-\sigma(s)) x_{i e}$
+
+**until** termination condition is satisfied.
+
+### Perceptron vs. Gradient Descent
+
+- Gradient descent finds the decision boundary which minimizes the <span style="color:blue">**sum squared error**</span> of the (target - net) value rather than the (target - output) value
+  - Perceptron rule will find the decision boundary which minimizes the classification error<span style="color:red"> **$-$ if the problem is linearly separable**</span>
+  - Gradient descent decision boundary may leave more instances misclassified as compared to the perceptron rule: <span style="color:blue">**could have a higher misclassification rate than with the perceptron rule**</span>
+- Perceptron rule (target - thresholded output) guaranteed to converge to a separating hyperplane if the problem is linearly separable.
+
+#### The error surface
+
+- The error surface lies in a space with a horizontal axis for each weight and one vertical axis for the error.
+  - For a linear neuron, it is a quadratic bowl.
+  - Vertical cross-sections are parabolas.
+  - Horizontal cross-sections are ellipses.
+
+  <img src="images\image-20210928171446376.png" alt="image-20210928171446376" style="zoom:80%;" />
+
+#### Batch vs incremental learning
+
+<img src="images\image-20210928171512831.png" alt="image-20210928171512831" style="zoom: 80%;" />
+
+### Summary
+
+- Perceptron training:
+  - uses thresholded unit
+  - converges after a finite number of iterations
+  - output hypothesis classifies training data perfectly
+  - linearly separability necessary
+- Gradient descent
+  - uses unthresholded linear unit
+  - converges asymptotically toward a minimum error hypothesis
+  - termination is not guaranteed
+  - linear separability not necessary
+
+### The fall of the Perceptron
+
+- Researchers begun to discover the Perceptron's limitations.
+- Unless input categories were "linearly separable", a perceptron could not learn to discriminate between them.
+- Unfortunately, it appeared that many important categories were not linearly separable.
+- E.g., those inputs to an XOR gate that give an output of 1 (namely 10 \& 01) are not linearly separable from those that do not $(00 \& 11)$.
