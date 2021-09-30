@@ -537,3 +537,224 @@ Maintains Data Consistency
 + SER. describe()
 
 <img src="images\image-20210923125355914.png" alt="image-20210923125355914" style="zoom:80%;" />
+
+## Lecture 4
+
+### Content
+
+>TBD
+
+### OUTLINE
+
+- What is Web Service?
+- Data Scraping
+- Gathering data from APIs
+
+<img src="images\image-20210930113018261.png" alt="image-20210930113018261" style="zoom: 50%;" />
+
+<img src="images\image-20210930113046601.png" alt="image-20210930113046601" style="zoom: 50%;" />
+
+### Web Servers
+
+- A server is a long running process (also called daemon) which listens on a prespecified port
+- and responds to a request, which is sent using a protocol called HTTP
+- A browser parses the url.
+
+#### HOW IT WORKS 
+
+<img src="images\image-20210930113136912.png" alt="image-20210930113136912" style="zoom: 67%;" />
+
+<img src="images\image-20210930113154225.png" alt="image-20210930113154225" style="zoom: 67%;" />
+
+<img src="images\image-20210930113219885.png" alt="image-20210930113219885" style="zoom: 67%;" />
+
+##### Example:
+
+- Our notebooks also talk to a local web server on our machines:
+http://localhost:8888/Documents/cs109/BLA.ipynb#something
+- protocol is http, hostname is localhost, port is 8888
+- url is / Documents/cs109/BLA.ipynb
+- url fragment is #something
+- Request is sent to localhost on port 8888 . It says:
+- Request: GET /request-URI HTTP/version
+
+<img src="images\image-20210930113309432.png" alt="image-20210930113309432" style="zoom:80%;" />
+
+#### HTTP STATUS CODES
+
+<img src="images\image-20210930113335917.png" alt="image-20210930113335917" style="zoom:80%;" />
+
+#### WEB SERVERS
+
+- Requests:
+
+  - great module built into python for http requests
+
+  - ```python
+    req=requests.get(“https://en.wikipedia.org/wiki/Harvard_University”)
+    ```
+
+  - <Response [200]>
+
+  - page = req.text
+
+  - ```python
+    '<!DOCTYPE html>\n<html class="client-nojs" lang="en" dir="ltr">\n<head>\n<meta
+    charset="UTF-8"/>\n<title>Harvard University -
+    Wikipedia</title>\n<script>document.documentElement.className=document.documentElement.cl
+    assName.replace( /(^|\\s)client-nojs(\\s|$)/,"$1client-js$2");</script>\n<script>(window.RLQ=window.RLQ||[]).push(function(){mw.config.set({"wgCanonicalNamespace":"","wgCanonicalSpecialPageName":false,"wgNamespaceNumber":0,"wgPageName":"Harvard_University","wgTitle":"Harva...'
+    ```
+
+<img src="images\image-20210930113544429.png" alt="image-20210930113544429" style="zoom:80%;" />
+
+### Python data scraping
+
+#### Why scrape the web?
+
+- vast source of information, combine with other data sets
+- companies have not provided APIs
+- automate tasks
+- keep up with sites
+- fun!
+
+#### CHALLENGES IN WEB SCRAPING
+
+- Which data?
+  - It is not always easy to know which site to scrape
+  - Which data is relevant, up to date, reliable?
+- The internet is dynamic
+  - Each web site has a particular structure, which may be changed anytime
+- Data is volatile
+  - Be aware of changing data patterns over time
+
+#### LEGAL
+
+- Privacy:
+  - Legislation on protection of personal information
+  - At this moment we only scrape public sources
+- Netiquette (practical):
+  - respect the **Robots Exclusion Protocol** also known as the robots.txt (example)
+  - identify yourself (user-agent)
+  - do not overload servers, use some idle time between requests, run crawlers at night / morning
+  - Inform website owners if feasible
+
+#### NOTICE
+
+- copyrights and permission:
+  - be careful and polite
+  - give credit
+  - care about media law
+  - don't be evil (no spam, overloading sites, etc.)
+
+#### ROBOTS.TXT
+
+- specified by web site owner
+- gives instructions to web robots (aka your script)
+- is located at the top-level directory of the web server
+- e.g.: http://google.com/robots.txt
+
+#### HTML
+
+- angle brackets
+- should be in pairs, eg \<p> Hello\</p>
+- maybe in implicit bears, such as \<br/>
+
+```html
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Title</title>
+	</head>
+	<body>
+		<h1>Body Title</h1>
+		<p >Body Content</p>
+	</body>
+</html>
+```
+
+#### DEVELOPER TOOLS
+
+- ctrl/cmd shift- i in chrome
+- cmd-option-i in safari
+- look for "inspect element"
+- locate details of tags
+
+#### BEAUTIFUL SOUP
+
++ will normalize dirty html 
++ basic usage
+
+```python
+import bs4
+# get bs4 object
+soup = bs4.BeautifulSoup(source)
+## all a tags
+soup.findAll('a')
+## first a 
+soup.find('a')
+# get all links in the page
+link_list = [l.get('href') for l in soup.findAll('a')]
+```
+
+##### HTML IS A TREE
+
+```python
+tree = bs4.BeautifulSoup(source)
+## get html root node
+root_node = tree.html
+## get head from root using contents
+head = root_node.contents[0]
+## get body from root
+body = root_node.contents[1]
+## could directly access body
+tree.body
+```
+
+##### DEMOGRAPHICS TABLE WE WANT
+
+<img src="images\image-20210930114616912.png" alt="image-20210930114616912" style="zoom:80%;" />
+
+##### TABLE WITH SOLE CLASS WIKITABLE
+
+<img src="images\image-20210930114641648.png" alt="image-20210930114641648" style="zoom:80%;" />
+
+##### BEAUTIFUL SOUP CODE
+
+```python
+dfinder = lambda tag:tag.name=='table' and tag.get('class')==['wikitable']
+table_demographics = soup.find_all(dfinder)
+rows = [row for row in table_demographics[0].find_all("tr")]
+header_row = rows[0]
+columns = [col.get_text() for col in header_row.find_all("th") if col.get_text()]
+columns = [rem_nl(c) for c in columns]
+indexes = [row.find("th").get_text() for row in rows[1:]]
+values = []
+for row in rows[1:]:
+    for value in row.find_all("td"):
+        values.append(to_num(value.get_text()))
+stacked_values_lists = [values[i::3] for i in range(len(columns))]
+stacked_values_iterator = zip(*stacked_values_lists)
+df = pd.DataFrame(list(stacked_values_iterator),columns=columns,index=indexes)
+```
+
+#### PROJECT EXAMPLE
+
+- https://github.com/alirezamika/autoscraper
+- https://github.com/scrapy/scrapy
+- https://yasoob.me/posts/github-actions-web-scraperschedule-tutorial/
+
+### Gathering data from APIs
+
+### API
+
+- API = **A**pplication **P**rogram **I**nterface
+- Many data sources have API's - largely for talking to other web interfaces
+- Consists of a set of methods to search, retrieve, or submit data to, a data source
+- We can write R code to interface with an API (lot's require authentication though)
+- Many packages already connect to well-known API's (we'll look at a couple today)
+
+#### PUBLIC API
+
+https://any-api.com
+
+<img src="images\image-20210930115757513.png" alt="image-20210930115757513" style="zoom:80%;" />
