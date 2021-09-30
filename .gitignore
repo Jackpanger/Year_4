@@ -281,3 +281,5 @@ cython_debug/
 
 .idea/
 /Image_Process.py
+/test.py
+/INT303 Big Data Analytics/assignment/
