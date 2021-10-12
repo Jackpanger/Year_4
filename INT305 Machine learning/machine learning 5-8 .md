@@ -145,10 +145,14 @@ A vectorized example: $f(x, W)=\|W \cdot x\|^{2}=\sum_{i=1}^{n}(W \cdot x)_{i}^{
 <img src="images\image-20211011180206284.png" alt="image-20211011180206284"  />
 
 <img src="images\image-20211011180303151.png" alt="image-20211011180303151"  />
+
+<img src="images\image-20211012184040583.png" alt="image-20211012184040583" style="zoom:67%;" />
 $$
 \begin{align*}
-q = W\vdot x = \sum_{i,j}w_{i,j}x_{j,i}\\
-\frac{\partial q_k}{\partial w_{i,j}} = \sum_i x_{ji} 
+q = W\vdot x = \sum_{i,j}w_{i,j}x_{j}, &\quad\text{size of }q \text{ is }(2,1)\\
+q_k = q_i=\sum_{j}w_{i,j}x_{j} &\quad\text{size of }q_k \text{ is }(1,1)\\
+\frac{\partial q_k}{\partial W_{i,j}} = \frac{\partial q_i}{\partial W_{i,j}}&=1_{k=i}x_{j} = x_j \\ 
+\frac{\partial f}{\partial W_{i,j}}= \frac{\partial f}{\partial q_{i}} \frac{\partial q_i}{\partial W_{i,j}} &= 2q_ix_j
 \end{align*}
 $$
 <img src="images\image-20211011180329875.png" alt="image-20211011180329875"  />
