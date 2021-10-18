@@ -157,3 +157,392 @@ q_k = q_i=\sum_{j}w_{i,j}x_{j} &\quad\text{size of }q_k \text{ is }(1,1)\\
 $$
 <img src="images\image-20211011180329875.png" alt="image-20211011180329875"  />
 
+## Lecture 6
+
+### Content
+
+>TBD
+
+### The problem
+
+<img src="images\image-20211018163747766.png" alt="image-20211018163747766"  />
+
+### Challenges
+
+Challenges: Viewpoint Variation 
+
+<img src="images\image-20211018163843534.png" alt="image-20211018163843534"  />
+
+**Challenges**: Illumination
+
+<img src="images\image-20211018163916058.png" alt="image-20211018163916058"  />
+
+**Challenges**: Deformation
+
+<img src="images\image-20211018163945273.png" alt="image-20211018163945273"  />
+
+**Challenges**: Occlusion
+
+<img src="images\image-20211018164009661.png" alt="image-20211018164009661"  />
+
+**Challenges**: Background Clutter
+
+<img src="images\image-20211018164032839.png" alt="image-20211018164032839"  />
+
+**Challenges**: Interclass variation
+
+<img src="images\image-20211018164058012.png" alt="image-20211018164058012"  />
+
+### An image classifier
+
+```python
+def predict(image):
+    # ???
+	return class__labet
+```
+
+Unlike e.g. sorting a list of numbers,
+**no obvious way** to hard-code the algorithm for recognizing a cat, or other classes.
+
+### Attempts
+
+Attempts have been made
+
+<img src="images\image-20211018164300538.png" alt="image-20211018164300538"  />
+
+<img src="images\image-20211018164317155.png" alt="image-20211018164317155"  />
+
+### Data-driven approach
+
+**Data-driven approach:**
+
+1. Collect a dataset of images and labels
+2. Use Machine Learning to train an image classifier
+3. Evaluate the classifier on a withheld set of test images
+
+```python
+def train(train_images, train_labels):
+	# build a model for images -> labels...
+	return model
+def predict(model, test_images):
+	# predict test_labeIs using the model...
+	return test_labels
+```
+
+<img src="images\image-20211018164445056.png" alt="image-20211018164445056" style="zoom:150%;" />
+
+### CNN
+
+Convolutional Neural Networks
+
+<img src="images\image-20211018164515917.png" alt="image-20211018164515917"  />
+
+<img src="images\image-20211018164539066.png" alt="image-20211018164539066" style="zoom:80%;" />
+
+<img src="images\image-20211018164556747.png" alt="image-20211018164556747" style="zoom:80%;" />
+
+<img src="images\image-20211018164610994.png" alt="image-20211018164610994" style="zoom:80%;" />
+
+<img src="images\image-20211018164633341.png" alt="image-20211018164633341" style="zoom:80%;" />
+
+<img src="images\image-20211018164718597.png" alt="image-20211018164718597" style="zoom:80%;" />
+
+For example, if we had $65 \times 5$ filters, we'll get 6 separate activation maps:
+
+<img src="images\image-20211018164915779.png" alt="image-20211018164915779" style="zoom:80%;" />
+
+We stack these up to get a "new image" of size $28 \times 28 \times 6 !$
+
+Preview: ConvNet is a sequence of Convolution Layers, interspersed with activation functions
+
+<img src="images\image-20211018164951056.png" alt="image-20211018164951056" style="zoom:80%;" />
+
+<img src="images\image-20211018165007989.png" alt="image-20211018165007989" style="zoom:80%;" />
+
+#### **Preview**
+
+<img src="images\image-20211018165039487.png" alt="image-20211018165039487"  />
+
+<img src="images\image-20211018165058252.png" alt="image-20211018165058252"  />
+
+<img src="images\image-20211018165117629.png" alt="image-20211018165117629"  />
+
+<img src="images\image-20211018165130595.png" alt="image-20211018165130595"  />
+
+A closer look at spatial dimensions:
+
+<img src="images\image-20211018165224027.png" alt="image-20211018165224027"  />
+
+A closer look at spatial dimensions:
+
+<img src="images\image-20211018165422309.png" alt="image-20211018165422309" style="zoom:80%;" />
+
+<img src="images\image-20211018165445015.png" alt="image-20211018165445015" style="zoom:80%;" />
+
+<img src="images\image-20211018165534690.png" alt="image-20211018165534690" style="zoom:80%;" />
+
+<span style="color:red">$7 \times 7$ input (spatially) assume $3 \times 3$ filter applied with stride $3 ?$</span>
+doesn't fit! cannot apply $3 \times 3$ filter on $7 \times 7$ input with stride 3 .
+
+Output size:
+**$(N-F) /$ stride $+1$**
+e.g. $N=7, F=3$ :
+stride $1=>(7-3) / 1+1=5$
+stride $2=>(7-3) / 2+1=3$
+stride $3=>(7-3) / 3+1=2.33$
+
+#### **In practice: Common to zero pad the border**
+
+<img src="images\image-20211018165736671.png" alt="image-20211018165736671"  />
+
+e.g. input $7 \times 7$
+$3 \times 3$ filter, applied with **stride 1**
+**pad with 1 pixel** border $=>$ what is the output?
+**$7 \times 7$ output!**
+
+in general, common to see CONV layers with stride 1, filters of size FxF, and zero-padding with $(F-1) / 2$. (will preserve size spatially)
+e.g. $F=3=>$ zero pad with 1
+$F=5=>$ zero pad with 2
+$F=7 \Rightarrow$ zero pad with 3
+
+**Remember back to...**
+E.g. $32 \times 32$ input convolved repeatedly with $5 \times 5$ filters shrinks volumes spatially! (32 -> 28 -> $24 \ldots$..). Shrinking too fast is not good, doesn't work well.
+
+<img src="images\image-20211018165902205.png" alt="image-20211018165902205"  />
+
+Examples time:
+Input volume: $32 \times 32 \times 3$
+$105 \times 5$ filters with stride 1, pad 2
+Output volume size:
+$\left(32+2^{*} 2-5\right) / 1+1=32$ spatially, so $32 \times 32 \times 10$
+
+Examples time:
+Input volume: $32 \times 32 \mathbf{x} 3$
+$105 \times 5$ filters with stride 1, pad 2
+Number of parameters in this layer?
+each filter has $5^{*} 5^{\star} 3+1=76$ params $\Rightarrow 76^{*} 10=760$
+
+#### **Summary**
+
+To summarize, the Conv Layer:
+
+- Accepts a volume of size $W_{1} \times H_{1} \times D_{1}$
+
+- Requires four hyperparameters:
+  - Number of filters $K$,
+
+  - their spatial extent $F$,
+
+  - the stride $S$,
+
+  - the amount of zero padding $P$.
+
+    >Common settings:
+    >K= powers of 2, e.g.  32,64,128,512) 
+    >
+    >+ F=3, S=1, P=1 
+    >
+    >+ F=5, S=1, P=2 
+    >+ F=5, S=2, P=?  (whatever fits)
+    >+ F=1, S=1, P=0 
+
+- Produces a volume of size $W_{2} \times H_{2} \times D_{2}$ where:
+
+  - $W_{2}=\left(W_{1}-F+2 P\right) / S+1$
+  - $H_{2}=\left(H_{1}-F+2 P\right) / S+1$ (i.e. width and height are computed equally by symmetry)
+  - $D_{2}=K$
+
+- With parameter sharing, it introduces $F \cdot F \cdot D_{1}$ weights per filter, for a total of $\left(F \cdot F \cdot D_{1}\right) \cdot K$ weights and $K$ biases.
+
+- In the output volume, the $d$-th depth slice (of size $\left.W_{2} \times H_{2}\right)$ is the result of performing a valid convolution of the $d$-th filter over the input volume with a stride of $S$, and then offset by $d$-th bias.
+
+(btw, $1 \times 1$ convolution layers make perfect sense)
+
+<img src="images\image-20211018170437642.png" alt="image-20211018170437642"  />
+
+<img src="images\image-20211018170832888.png" alt="image-20211018170832888"  />
+
+<img src="images\image-20211018170841760.png" alt="image-20211018170841760"  />
+
+The brain/neuron view of CONV Layer
+
+<img src="images\image-20211018170914030.png" alt="image-20211018170914030"  />
+
+<img src="images\image-20211018170942293.png" alt="image-20211018170942293"  />
+
+<img src="images\image-20211018171036484.png" alt="image-20211018171036484"  />
+
+<img src="images\image-20211018171053627.png" alt="image-20211018171053627"  />
+
+#### Pooling layer
+
+- makes the representations smaller and more manageable 
+- operates over each activation map independently:
+
+<img src="images\image-20211018171158100.png" alt="image-20211018171158100"  />
+
+##### MAX POOLING
+
+<img src="images\image-20211018171227529.png" alt="image-20211018171227529" style="zoom:80%;" />
+
+- Accepts a volume of size $W_{1} \times H_{1} \times D_{1}$
+- Requires three hyperparameters:
+  - their spatial extent $F$,
+
+  - the stride $S$.
+
+    >Common settings:
+    >
+    >F=2, S=2 
+    >F=3, S=2
+- Produces a volume of size $W_{2} \times H_{2} \times D_{2}$ where:
+  - $W_{2}=\left(W_{1}-F\right) / S+1$
+  - $H_{2}=\left(H_{1}-F\right) / S+1$
+  - $D_{2}=D_{1}$
+- Introduces zero parameters since it computes a fixed function of the input
+- Note that it is not common to use zero-padding for Pooling layers
+
+### Fully Connected Layer (FC layer)
+
+- Contains neurons that connect to the entire input volume, as in ordinary Neural Networks
+
+#### Case Study: LeNet-5
+
+![image-20211018171747101](C:\Users\ADMIN\AppData\Roaming\Typora\typora-user-images\image-20211018171747101.png)
+
+#### Case Study: AlexNet 
+
+[Krizhevsky etal. 2012]
+
+<img src="images\image-20211018171809893.png" alt="image-20211018171809893"  />
+
+Input: $227 \times 227 \times 3$ images
+**First layer** (CONV1): $9611 \times 11$ filters applied at stride 4 =>
+<span style="color:blue">$\mathrm{Q}$ : what is the output volume size? Hint: $(227-11) / 4+1=55$</span>
+
+Output volume **[55x55x96]**
+<span style="color:blue">Q: What is the total number of parameters in this layer?</span>
+
+Parameters: $\left(11^{*} 11^{*} 3\right)^{*} 96=35 \mathrm{~K}$
+
+After CONV1: 55x55x96
+**Second layer** (POOL1): $3 \times 3$ filters applied at stride 2 
+
+Output volume: 27x27x96
+
+<span style="color:blue">Q: what is the number of parameters in this layer?</span>
+
+Parameters: 0!
+
+
+
+Full (simplified) AlexNet architecture: 
+
+$[227\times227\times3]$ INPUT
+$[55 \times 55 \times 96]$ <span style="color:red">CONV1</span>: $9611 \times 11$ filters at stride 4, pad 0 
+
+$[27\times27\times96]$ <span style="color:blue">MAX POOL1</span>: $3 \times 3$ filters at stride 2 
+
+$[27x27x96]$ :<span style="color:green">NORM1</span> Normalization layer 
+
+$[27\times27\times256]$ <span style="color:red">CONV2:</span> $2565 \times 5$ filters at stride 1, pad 2 
+
+$[13\times13\times256]$ <span style="color:blue">MAX POOL2</span>: $3 \times 3$ filters at stride 2 
+
+$[13x13\times256]$ <span style="color:green">NORM2</span>: Normalization layer.
+$[13x13\times384]$ <span style="color:red">CONV3</span>: $3843 \times 3$ filters at stride 1, pad 1 
+
+$[13 \times 13 \times 384]$ <span style="color:red">CONV4</span>: $3843 \times 3$ filters at stride 1, pad 1 
+
+$[13\times 13\times256]$ <span style="color:red">CONV5</span>: $2563 \times 3$ filters at stride 1, pad 1 
+
+$[6 \times 6 \times 256]$ <span style="color:blue">MAX POOL3</span>: $3 \times 3$ filters at stride 2
+[4096] <span style="color:orange">FC6</span>: 4096 neurons
+[4096] <span style="color:orange">FC7</span>: 4096 neurons
+[1000] <span style="color:orange">FC8</span>; 1000 neurons (class scores)
+
+>Details/Retrospectives:
+>- first use of $\operatorname{ReLU}$
+>- used Norm layers (not common anymore)
+>- heavy data augmentation
+>- dropout $0.5$
+>- batch size 128
+>- SGD Momentum $0.9$
+>- Learning rate $1 \mathrm{e}-2$, reduced by 10
+>manually when val accuracy plateaus
+>- L2 weight decay $5 \mathrm{e}-4$
+>- 7 CNN ensemble: $18.2 \%=>15.4 \%$
+
+<img src="images\image-20211018172655398.png" alt="image-20211018172655398"  />
+
+#### Case Study: VGGNet 
+
+[Simonyan and Zisserman, 2014]
+
+<img src="images\image-20211018172711105.png" alt="image-20211018172711105"  />
+
+INPUT: $[224\times224\times3]$  <span style="color:red">memory: $224^{*} 224^{\star} 3=150 \mathrm{~K}$</span> <span style="color:blue">params: 0 (not counting biases) </span>
+
+CONV3-64: $[224 \times 224 \times 64]$ <span style="color:red">memory: $224^{*} 224^{*} 64=3.2 \mathrm{M}$</span> <span style="color:blue">params: $\left(3^{*} 3^{*} 3\right)^{*} 64=1,728$</span>
+CONV3-64: $[224 \times 224 \times 64]$ <span style="color:red">memory: $224^{2} 224^{*} 64=3.2 \mathrm{M}$</span>  <span style="color:blue">params: $\left(3^{*} 3^{*} 64\right)^{*} 64=36,864$</span>
+
+POOL2: $[112\times112\times64]$ <span style="color:red">memory: $112^{*} 112^{\circ} 64=800 \mathrm{~K}$</span> <span style="color:blue">params: 0</span>
+CONV3-128: $\left[112 \times 112 \times 1281\right.$ <span style="color:red">memory: $112^{*} 112^{*} 128=1.6 \mathrm{M}$</span> <span style="color:blue">params: $\left(3^{*} 3^{*} 64\right)^{*} 128=73,728$</span>
+CONV3-128: $[112\times112\times128]$ <span style="color:red">memory: $112^{*} 112^{*} 128=1.6 \mathrm{M}$ </span><span style="color:blue">params: $\left(3^{*} 3^{*} 128\right)^{*} 128=147,456$ </span>
+
+POOL2: $[56\times56\times128]$ <span style="color:red">memory: $56^{*} 56^{*} 128=400 \mathrm{K}$ </span><span style="color:blue">params: 0</span>
+CONV3-256: $[56\times56\times256]$ <span style="color:red">memory: $56^{*} 56^{*} 256=800 \mathrm{K}$</span> <span style="color:blue">params: $\left(3^{*} 3^{*} 128\right)^{*} 256=294,912$</span>
+CONV3-256: $[56\times56\times256]$ <span style="color:red">memory: $56^{*} 56^{*} 256=800 \mathrm{K}$ </span><span style="color:blue">params: $\left(3^{*} 3^{*} 256\right)^{*} 256=589,824$</span>
+CQNY3-256: $[56 \times 56 \times 256]$ <span style="color:red">memory: $56^{*} 56^{*} 256=800 \mathrm{K}$ </span><span style="color:blue">params: $\left(3^{*} 3^{*} 256\right)^{*} 256=589,824$</span>
+POOL2: $[28\times28\times256]$ <span style="color:red">memory: $28^{*} 28^{*} 256=200 \mathrm{K}$ </span><span style="color:blue">params: 0</span>
+CONV3-512: $[28 \times 28 \times 512]$ <span style="color:red">memory: $28^{*} 28^{*} 512=400 \mathrm{K}$ </span><span style="color:blue">params: $\left(3^{*} 3^{*} 256\right)^{*} 512=1,179,648$</span>
+CONV3-512: $[28\times28\times512]$ <span style="color:red">memory: $28^{*} 28^{*} 512=400 \mathrm{K}$</span> <span style="color:blue">params: $\left(3^{*} 3^{*} 512\right)^{*} 512=2,359,296$</span>
+CONV3-512: $[28\times28\times512]$ <span style="color:red">memory: $28^{*} 28^{*} 512=400 \mathrm{K}$ </span><span style="color:blue">params: $\left(3^{*} 3^{*} 512\right)^{*} 512=2,359,296$</span>
+POOL2: $[14\times 14\times512]$ <span style="color:red">memory: $14^{*} 14^{*} 512=100 \mathrm{K}$ </span><span style="color:blue">params: 0</span>
+CONV3-512: $[14 \times 14 \times 512]$ <span style="color:red">memory: $14^{*} 14^{*} 512=100 \mathrm{K}$</span> <span style="color:blue">params: $\left(3^{*} 3^{*} 512\right)^{*} 512=2,359,296$</span>
+CONV3-512: $[14 \times 14 \times 512]$ <span style="color:red">memory: $14^{*} 14^{*} 512=100 \mathrm{K}$</span> <span style="color:blue">params: $\left(3^{*} 3^{*} 512\right)^{*} 512=2,359,296$</span>
+CONV3-512: $[14\times14\times512]$ <span style="color:red">memory: $14^{*} 14^{*} 512=100 \mathrm{K}$</span> <span style="color:blue">params: $\left(3^{*} 3^{*} 512\right)^{*} 512=2,359,296$</span>
+POOL2: $[7 \times 7 \times 512]$ <span style="color:red">memory: $7^{*} 7^{*} 512=25 \mathrm{K}$</span> <span style="color:blue">params: 0</span>
+FC: $[1 \times 1 \times 4096]$ <span style="color:red">memory: 4096</span> <span style="color:blue">params: $7^{*} 7^{*} 512^{*} 4096=102,760,448$</span>
+FC: $[1\times1\times4096]$ <span style="color:red">memory: 4096</span> <span style="color:blue">params: $4096^{*} 4096=16,777,216$</span>
+FC: $[1\times1\times1000]$ <span style="color:red">memory; 1000</span> <span style="color:blue">params: $4096^{*} 1000=4,096,000$</span>
+<span style="color:red">TOTAL memory: $24 \mathrm{M} * 4$ bytes $\sim=93 \mathrm{MB} /$ image</span> (only forward! $\sim^{\star} 2$ for bwd) 
+
+<span style="color:blue">TOTAL params: $138 \mathrm{M}$ parameters</span>
+
+#### Case Study: GoogLeNet
+
+[Szegedy et al., 2014]
+
+<img src="images\image-20211018174522833.png" alt="image-20211018174522833"  />
+
+<img src="images\image-20211018174545009.png" alt="image-20211018174545009"  />
+
+#### Case Study: ResNet
+
+[He et al., 2015]
+<span style="color:blue">ILSVRC 2015 winner $(3.6 \%$ top 5 error)</span>
+
+<img src="images\image-20211018174648345.png" alt="image-20211018174648345"  />
+
+<img src="C:\Users\ADMIN\AppData\Roaming\Typora\typora-user-images\image-20211018174717466.png" alt="image-20211018174717466"  />
+
+##### CIFAR-10 experiments
+
+<img src="images\image-20211018174753352.png" alt="image-20211018174753352"  />
+
+<img src="images\image-20211018174813550.png" alt="image-20211018174813550"  />
+
+<img src="images\image-20211018174831913.png" alt="image-20211018174831913"  />
+
+<img src="images\image-20211018174847996.png" alt="image-20211018174847996"  />
+
+### Summary
+
+- ConvNets stack CONV,POOL,FC layers
+- Trend towards smaller filters and deeper architectures
+- Trend towards getting rid of POOL/FC layers (just CONV)
+- Typical architectures look like
+  **[(CONV-RELU) $^{*}$ N-POOL?] $^{*}$ M-(FC-RELU) ${ }^{\star}$ K,SOFTMAX** where $N$ is usually up to $\sim 5$, M is large, $0<=k<=2$.
+  - but recent advances such as ResNet/GoogLeNet challenge this paradigm
+
