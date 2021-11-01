@@ -546,3 +546,454 @@ FC: $[1\times1\times1000]$ <span style="color:red">memory; 1000</span> <span sty
   **[(CONV-RELU) $^{*}$ N-POOL?] $^{*}$ M-(FC-RELU) ${ }^{\star}$ K,SOFTMAX** where $N$ is usually up to $\sim 5$, M is large, $0<=k<=2$.
   - but recent advances such as ResNet/GoogLeNet challenge this paradigm
 
+## Lecture 8
+
+### Content
+
+>TBD
+
+### Outline
+
+- <span style="color:blue">Decision Trees</span>
+  - imple but powerful learning algorithm
+  - Used widely in Kaggle competitions
+  - Lets us motivate concepts from information theory (entropy, mutual information, etc.)
+- <span style="color:blue">Bias-variance decomposition</span>
+  - Lets us motivate methods for combining different classifiers.
+
+### Decision Trees
+
+- Make predictions by splitting on features according to a tree structure.
+
+  <img src="images\image-20211101163643574.png" alt="image-20211101163643574" style="zoom:80%;" />
+
+- Split continuous features by checking whether that feature is greater than or less than some threshold.
+- Decision boundary is made up of axis-aligned planes.
+
+  <img src="images\image-20211101163717108.png" alt="image-20211101163717108"  />
+
+- <span style="color:blue">Internal nodes</span> test a <span style="color:blue">feature</span>
+- <span style="color:blue">Branching</span> is determined by the <span style="color:blue">feature value</span>
+- <span style="color:blue">Leaf nodes</span> are <span style="color:blue">outputs</span> (predictions)
+
+#### Classification and Regression
+
+- Each path from root to a leaf defines a region $R_{m}$ of input space
+- Let $\left\{\left(x^{\left(m_{1}\right)}, t^{\left(m_{1}\right)}\right), \ldots,\left(x^{\left(m_{k}\right)}, t^{\left(m_{k}\right)}\right)\right\}$ be the training examples that fall into $R_{m}$
+- <span style="color:blue">Classification tree</span> (we will focus on this):
+  - discrete output
+  - leaf value $y^{m}$ typically set to the most common value in $\left\{t^{\left(m_{1}\right)}, \ldots, t^{\left(m_{k}\right)}\right\}$
+- <span style="color:blue">Regression tree:</span>
+  - continuous output
+  - leaf value $y^{m}$ typically set to the mean value in $\left\{t^{\left(m_{1}\right)}, \ldots, t^{\left(m_{k}\right)}\right\}$
+
+#### Discrete Features
+
+- Will I eat at this restaurant?
+
+  <img src="images\image-20211101164035341.png" alt="image-20211101164035341"  />
+
+- Split discrete features into a partition of possible values.
+
+  <img src="images\image-20211101164103342.png" alt="image-20211101164103342"  />
+
+#### Attempts
+
+The drawing below shows a dataset. Each example in the dataset has two inputs features 𝑥 and 𝑦, and maybe classified as a positive example (labelled +) or a negative example (labelled −). Draw a decision tree which correctly classifies each example in the dataset.
+
+<img src="images\image-20211101164238207.png" alt="image-20211101164238207"  />
+
+<img src="images\image-20211101164251827.png" alt="image-20211101164251827"  />
+
+#### Learning Decision Trees
+
+- For any training set we can construct a decision tree that has exactly the one leaf for every training point, but it probably won't generalize.
+  - Decision trees are universal function approximators.
+- But, finding the smallest decision tree that correctly classifies a training set is NP complete.
+  - If you are interested, check: Hyafil \& Rivest'76.
+- So, how do we construct a useful decision tree?
+
+- Resort to a greedy heuristic:
+  - Start with the whole training set and an empty decision tree.
+  - Pick a feature and candidate split that would most reduce the loss.
+  - Split on that feature and recurse on subpartitions.
+- Which loss should we use?
+  - Let's see if misclassification rate is a good loss.
+
+#### Choosing a Good Split
+
+- Consider the following data. Let's split on width.
+
+  <img src="images\image-20211101164504718.png" alt="image-20211101164504718"  />
+
+- Recall: classify by majority.
+
+  <img src="images\image-20211101164530831.png" alt="image-20211101164530831"  />
+
+- A and B have the same misclassification rate, so which is the best split? 
+
+  **Left. Because the left one has one part with certainty.**
+
+- A feels like a better split, because the left-hand region is very certain about whether the fruit is an orange.
+
+  <img src="images\image-20211101164631733.png" alt="image-20211101164631733"  />
+
+- Can we quantify this?
+
+- How can we quantify uncertainty in prediction for a given leaf node?
+  - If all examples in leaf have same class: good, low uncertainty
+  - If each class has same amount of examples in leaf: bad, high uncertainty
+- **Idea**: Use counts at leaves to define probability distributions; use a probabilistic notion of uncertainty to decide splits.
+- A brief detour through information theory...
+
+#### Quantifying Uncertainty
+
+- The <span style="color:blue">entropy</span> of a discrete random variable is a number that quantifies the <span style="color:blue">uncertainty</span> inherent in its possible outcomes.
+- The mathematical definition of entropy that we give in a few slides may seem arbitrary, but it can be motivated axiomatically.
+  - If you're interested, check: Information Theory by Robert Ash.
+- To explain entropy, consider flipping two different coins...
+
+#### We Flip Two Different Coins
+
+<img src="images\image-20211101164807010.png" alt="image-20211101164807010" style="zoom:80%;" />
+
+- The entropy of a loaded coin with probability $p$ of heads is given by
+  $$
+  \begin{align*}
+  -p \log _{2}(p)-(1-p) \log _{2}(1-p)
+  \end{align*}
+  $$
+  <img src="images\image-20211101164911108.png" alt="image-20211101164911108"  />
+
+- Notice: the coin whose outcomes are more certain has a lower entropy.
+- In the extreme case $p=0$ or $p=1$, we were certain of the outcome before observing. So, we gained no certainty by observing it, i.e., entropy is 0 .
+
+#### Quantifying Uncertainty
+
+- Can also think of <span style="color:blue">entropy</span> as the expected information content of a random draw from a probability distribution.
+
+  <img src="images\image-20211101165039202.png" alt="image-20211101165039202"  />
+
+- Claude Shannon showed: you cannot store the outcome of a random draw using fewer expected bits than the entropy without losing information,
+- So units of entropy are <span style="color:blue">bits</span>; a fair coin flip has 1 bit of entropy.
+
+### Entropy
+
+- More generally, the <span style="color:blue">entropy</span> of a discrete random variable $Y$ is given by
+  $$
+  \begin{align*}
+  H(Y)=-\sum_{y \in Y} p(y) \log _{2} p(y)
+  \end{align*}
+  $$
+
+- **"High Entropy":**
+
+  - Variable has a uniform like distribution over many outcomes
+  - Flat histogram
+  - Values sampled from it are less predictable
+
+- **"Low Entropy"**
+
+  - Distribution is concentrated on only a few outcomes
+  - Histogram is concentrated in a few areas
+  - Values sampled from it are more predictable
+
+- Suppose we observe partial information $X$ about a random variable $Y$
+  - For example, $X=\operatorname{sign}(Y)$.
+- We want to work towards a definition of the expected amount of information that will be conveyed about $Y$ by observing $X$.
+  - Or equivalently, the expected reduction in our uncertainty about $Y$ after observing $X$.
+
+##### Entropy of a Joint Distribution
+
+- Example: $X=\{$ Raining, Not raining $\}, Y=\{$ Cloudy, Not cloudy $\}$
+
+  |             | Cloudy | Not Cloudy |
+  | :---------: | :----: | :--------: |
+  |   Raining   | 24/100 |   1/100    |
+  | Not Raining | 25/100 |   50/100   |
+
+  $$
+  \begin{align*}
+  H(X, Y) &=-\sum_{x \in X} \sum_{y \in Y} p(x, y) \log _{2} p(x, y) \\
+  &=-\frac{24}{100} \log _{2} \frac{24}{100}-\frac{1}{100} \log _{2} \frac{1}{100}-\frac{25}{100} \log _{2} \frac{25}{100}-\frac{50}{100} \log _{2} \frac{50}{100} \\
+  & \approx 1.56 \mathrm{bits}
+  \end{align*}
+  $$
+
+#### Specific Conditional Entropy
+
+- What is the entropy of cloudiness $Y$, **given that it is raining**?
+  $$
+  \begin{align*}
+  H(Y \mid X=x) &=-\sum_{y \in Y} p(y \mid x) \log _{2} p(y \mid x) \\
+  &=-\frac{24}{25} \log _{2} \frac{24}{25}-\frac{1}{25} \log _{2} \frac{1}{25} \\
+  & \approx 0.24 \mathrm{bits}
+  \end{align*}
+  $$
+
+- We used: $p(y \mid x)=\frac{p(x, y)}{p(x)}$, and $p(x)=\sum_{y} p(x, y) \quad$ (sum in a row)
+
+#### Conditional Entropy
+
+- The expected conditional entropy:
+  $$
+  \begin{align*}
+  H(Y \mid X) &=\sum_{x \in X} p(x) H(Y \mid X=x) \\
+  &=-\sum_{x \in X} \sum_{y \in Y} p(x, y) \log _{2} p(y \mid x)
+  \end{align*}
+  $$
+
+- What is the entropy of cloudiness, given the knowledge of whether or not it is raining?
+  $$
+  \begin{align*}
+  H(Y \mid X) &=\sum_{x \in X} p(x) H(Y \mid X=x) \\
+  &=\frac{1}{4} H(\text { cloudy } \mid \text { is raining })+\frac{3}{4} H(\text { cloudy } \mid \text { not raining }) \\
+  & \approx 0.75 \text { bits }
+  \end{align*}
+  $$
+  
+
+- Some useful properties:
+  - $H$ is always non-negative
+  - Chain rule: $H(X, Y)=H(X \mid Y)+H(Y)=H(Y \mid X)+H(X)$
+  - If $X$ and $Y$ independent, then $X$ does not affect our uncertainty about $Y: H(Y \mid X)=H(Y)$
+  - But knowing $Y$ makes our knowledge of $Y$ certain: $H(Y \mid Y)=0$
+  - By knowing $X$, we can only decrease uncertainty about $Y$ : $H(Y \mid X) \leq H(Y)$
+
+#### Information Gain
+
+|             | Cloudy | Not Cloudy |
+| :---------: | :----: | :--------: |
+|   Raining   | 24/100 |   1/100    |
+| Not Raining | 25/100 |   50/100   |
+
+- How much more certain am I about whether it's cloudy if I'm told whether it is raining? My uncertainty in $Y$ minus my expected uncertainty that would remain in $Y$ after seeing $X$.
+
+- This is called the <span style="color:blue">information gain</span> $I G(Y \mid X)$ in $Y$ due to $X$, or the <span style="color:blue">mutual information</span> of $Y$ and $X$
+  $$
+  \begin{align*}
+  I G(Y \mid X)=H(Y)-H(Y \mid X)
+  \end{align*}
+  $$
+
+- If $X$ is completely uninformative about $Y: I G(Y \mid X)=0$
+
+- If $X$ is completely informative about $Y: I G(Y \mid X)=H(Y)$
+
+#### Revisiting Our Original Example
+
+- Information gain measures the informativeness of a variable, which is exactly what we desire in a decision tree split!
+
+- The information gain of a split: how much information (over the training set) about the class label $Y$ is gained by knowing which side of a split you're on.
+
+  
+
+- What is the information gain of split B? Not terribly informative...
+
+  <img src="images\image-20211101171458654.png" alt="image-20211101171458654"  />
+
+- Root entropy of class outcome: $H(Y)=-\frac{2}{7} \log _{2}\left(\frac{2}{7}\right)-\frac{5}{7} \log _{2}\left(\frac{5}{7}\right) \approx 0.86$
+- Leaf conditional entropy of class outcome: $H(Y \mid l e f t) \approx 0.81$, $H(Y \mid$ right $) \approx 0.92$
+- $I G($ split $) \approx 0.86-\left(\frac{4}{7} \cdot 0.81+\frac{3}{7} \cdot 0.92\right) \approx 0.006$
+
+
+
+- What is the information gain of split A? Very informative!
+
+  <img src="images\image-20211101171803281.png" alt="image-20211101171803281"  />
+
+  - Root entropy of class outcome: $H(Y)=-\frac{2}{7} \log _{2}\left(\frac{2}{7}\right)-\frac{5}{7} \log _{2}\left(\frac{5}{7}\right) \approx 0.86$
+  - Leaf conditional entropy of class outcome: $H(Y \mid$ left $)=0$, $H(Y \mid$ right $) \approx 0.97$
+  - $I G($ split $) \approx 0.86-\left(\frac{2}{7} \cdot 0+\frac{5}{7} \cdot 0.97\right) \approx 0.17 ! !$
+
+### Constructing Decision Trees
+
+<img src="images\image-20211101171855395.png" alt="image-20211101171855395"  />
+
+- At each level, one must choose:
+  1. Which feature to split.
+  2. Possibly where to split it.
+
+- Choose them based on how much information we would gain from the decision! (choose feature that gives the highest gain)
+
+#### Decision Tree Construction Algorithm
+
+- Simple, greedy, recursive approach, builds up tree node-by-node
+  1. pick a feature to split at a non-terminal node
+  2. split examples into groups based on feature value
+  3. for each group:
+     + if no examples - return majority from parent
+     + else if all examples in same class - return class
+     + else loop to step 1
+- Terminates when all leaves contain only examples in the same class or are empty.
+
+#### Back to Our Example
+
+<img src="images\image-20211101172028355.png" alt="image-20211101172028355"  />
+
+<img src="images\image-20211101172043348.png" alt="image-20211101172043348"  />
+$$
+I G(Y)=H(Y)-H(Y \mid X) \\
+I G(\text {type})=1-\left[\frac{2}{12} H(Y \mid \mathrm{Fr}.)+\frac{2}{12} H(Y \mid \mathrm{It} .)+\frac{4}{12} H(Y \mid \text{Thai})+\frac{4}{12} H(Y \mid \text {Bur.})\right]=0 \\
+I G(\text {Patrons})=1-\left[\frac{2}{12} H(0,1)+\frac{4}{12} H(1,0)+\frac{6}{12} H\left(\frac{2}{6}, \frac{4}{6}\right)\right] \approx 0.541
+$$
+
+### What Makes a Good Tree?
+
+- Not too small: need to handle important but possibly subtle distinctions in data
+- Not too big:
+  - Computational efficiency (avoid redundant, spurious attributes)
+  - Avoid over-fitting training examples
+  - Human interpretability
+- <span style="color:blue">"Occam's Razor"</span>: find the simplest hypothesis that fits the observations
+  - Useful principle, but hard to formalize (how to define simplicity?)
+  - See Domingos, 1999, "The role of Occam's razor in knowledge discovery"
+- We desire small trees with informative nodes near the root
+
+### Decision Tree Miscellany
+
+- Problems:
+  - You have exponentially less data at lower levels
+  - Too big of a tree can overfit the data
+  - Greedy algorithms don't necessarily yield the global optimum
+- Handling continuous attributes
+  - Split based on a threshold, chosen to maximize information gain
+
+#### Comparison to some other classifiers
+
+Advantages of decision trees over KNNs and neural nets
+- Simple to deal with discrete features, missing values, and poorly scaled data
+- Fast at test time
+- More interpretable
+
+Advantages of KNNs over decision trees
+
+- Few hyperparameters
+- Can incorporate interesting distance measures (e.g. shape contexts)
+
+Advantages of neural nets over decision trees
+
+- Able to handle attributes/features that interact in very complex ways (e.g. pixels)
+
+
+
+- We've seen many classification algorithms.
+- We can combine multiple classifiers into an ensemble, which is a set of predictors whose individual decisions are combined in some way to classify new examples
+  - E.g., (possibly weighted) majority vote
+- For this to be nontrivial, the classifiers must differ somehow, e.g.
+  - Different algorithm
+  - Different choice of hyperparameters
+  - Trained on different data
+  - Trained with different weighting of the training examples
+- Next lecture, we will study some specific ensembling techniques.
+
+
+
+- Today, we deepen our understanding of generalization through a bias-variance decomposition.
+  - This will help us understand ensembling methods.
+
+### Bias-Variance Decomposition
+
+- Recall that overly simple models underfit the data, and overly complex models overfit
+
+  <img src="images\image-20211101172926546.png" alt="image-20211101172926546"  />
+
+- We can quantify this effect in terms of the <span style="color:blue">bias/variance decomposition</span>.
+  - Bias and variance of what?
+
+####  Basic Setup
+
+- Suppose the training set $\mathcal{D}$ consists of pairs $\left(\mathbf{x}_{i}, t_{i}\right)$ sampled <span style="color:blue">independent and identically distributed (i.i.d.)</span> from a single <span style="color:blue">data generating distribution</span> $p_{\text {sample }}$.
+- Pick a fixed query point $\mathrm{x}$ (denoted with a green $\mathrm{x}$ ).
+- Consider an experiment where we sample lots of training sets independently from $p_{\text {sample. }}$
+
+  <img src="images\image-20211101173057668.png" alt="image-20211101173057668"  />
+
+- Let's run our learning algorithm on each training set, and compute its prediction $y$ at the query point $\mathbf{x}$.
+- We can view $y$ as a random variable, where the randomness comes from the choice of training set.
+- The classification accuracy is determined by the distribution of $y$.
+
+  <img src="images\image-20211101173121165.png" alt="image-20211101173121165"  />
+
+Here is the analogous setup for regression:
+
+<img src="images\image-20211101173142530.png" alt="image-20211101173142530"  />
+
+Since $y$ is a random variable, we can talk about its expectation, variance, etc.
+
+- Recap of basic setup:
+  - Fix a query point $\mathrm{x}$.
+  - Repeat:
+    - Sample a random training dataset $\mathcal{D}$ i.i.d. from the data generating distribution $p_{\text {sample. }}$
+    - Run the learning algorithm on $\mathcal{D}$ to get a prediction $y$ at $\mathbf{x}$.
+    - Sample the (true) target from the conditional distribution $p(t \mid \mathbf{x})$.
+    - Compute the loss $L(y, t)$
+- Notice: $y$ is independent of $t$
+- This gives a distribution over the loss at $\mathbf{x}$, with expectation $\mathbb{E}[L(y, t) \mid \mathbf{x}]$.
+- For each query point $\mathbf{x}$, the expected loss is different. We are interested in minimizing the expectation of this with respect to $\mathbf{x} \sim p_{\text {sample }}$.
+
+#### Bayes Optimality
+
+- For now, focus on squared error loss, $L(y, t)=\frac{1}{2}(y-t)^{2}$.
+
+- A first step: suppose we knew the conditional distribution $p(t \mid \mathbf{x}) .$ What value $y$ should we predict?
+
+- Here, we are treating $t$ as a random variable and choosing $y$.
+
+- **Claim**: $y_{*}=\mathbb{E}[t \mid \mathbf{x}]$ is the best possible prediction.
+
+- **Proof**:
+  $$
+  \begin{align*}
+  \mathbb{E}\left[(y-t)^{2} \mid \mathbf{x}\right] &=\mathbb{E}\left[y^{2}-2 y t+t^{2} \mid \mathbf{x}\right] \\
+  &=y^{2}-2 y \mathbb{E}[t \mid \mathbf{x}]+\mathbb{E}\left[t^{2} \mid \mathbf{x}\right] \\
+  &=y^{2}-2 y \mathbb{E}[t \mid \mathbf{x}]+\mathbb{E}[t \mid \mathbf{x}]^{2}+\operatorname{Var}[t \mid \mathbf{x}] \\
+  &=y^{2}-2 y y_{*}+y_{*}^{2}+\operatorname{Var}[t \mid \mathbf{x}] \\
+  &=\left(y-y_{*}\right)^{2}+\operatorname{Var}[t \mid \mathbf{x}]
+  \end{align*}
+  $$
+
+$$
+\mathbb{E}\left[(y-t)^{2} \mid \mathbf{x}\right]=\left(y-y_{*}\right)^{2}+\operatorname{Var}[t \mid \mathbf{x}]
+$$
+- The first term is nonnegative, and can be made 0 by setting $y=y_{*}$.
+
+- The second term corresponds to the inherent unpredictability, or <span style="color:blue">noise</span>, of the targets, and is called the <span style="color:blue">Bayes error</span>.
+  - This is the best we can ever hope to do with any learning algorithm. An algorithm that achieves it is <span style="color:blue">Bayes optimal</span>.
+  - Notice that this term doesn't depend on $y$.
+
+- This process of choosing a single value $y_{*}$ based on $p(t \mid \mathbf{x})$ is an example of <span style="color:blue">decision theory</span>.
+
+  
+
+- Now return to treating $y$ as a random variable (where the randomness comes from the choice of dataset).
+- We can decompose out the expected loss (suppressing the conditioning on $\mathrm{x}$ for clarity):
+
+$$
+\begin{aligned}
+\mathbb{E}\left[(y-t)^{2}\right] &=\mathbb{E}\left[\left(y-y_{\star}\right)^{2}\right]+\operatorname{Var}(t) \\
+&=\mathbb{E}\left[y_{\star}^{2}-2 y_{\star} y+y^{2}\right]+\operatorname{Var}(t) \\
+&=y_{\star}^{2}-2 y_{\star} \mathbb{E}[y]+\mathbb{E}\left[y^{2}\right]+\operatorname{Var}(t) \\
+&=y_{\star}^{2}-2 y_{\star} \mathbb{E}[y]+\mathbb{E}[y]^{2}+\operatorname{Var}(y)+\operatorname{Var}(t) \\
+&=\underbrace{\left(y_{\star}-\mathbb{E}[y]\right)^{2}}_{\text {bias }}+\underbrace{\operatorname{Var}(y)}_{\text {variance }}+\underbrace{\operatorname{Var}(t)}_{\text {Bayes error }}
+\end{aligned}
+$$
+
+$$
+\mathbb{E}\left[(y-t)^{2}\right]=\underbrace{\left(y_{\star}-\mathbb{E}[y]\right)^{2}}_{\text {bias }}+\underbrace{\operatorname{Var}(y)}_{\text {variance }}+\underbrace{\operatorname{Var}(t)}_{\text {Bayes error }}
+$$
+- We just split the expected loss into three terms:
+  - <span style="color:blue">bias</span>: how wrong the expected prediction is (corresponds to underfitting)
+  - <span style="color:blue">variance</span>: the amount of variability in the predictions (corresponds to overfitting)
+  - Bayes error: the inherent unpredictability of the targets
+- Even though this analysis only applies to squared error, we often loosely use "bias" and "variance" as synonyms for "underfitting" and "overfitting".
+
+#### Bias and Variance
+
+- Throwing darts $=$ predictions for each draw of a dataset
+
+  <img src="images\image-20211101173700110.png" alt="image-20211101173700110"  />
+
+- Be careful, what doesn't this capture?
+  - We average over points $\mathbf{x}$ from the data distribution.
+
