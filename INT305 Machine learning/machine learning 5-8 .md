@@ -546,7 +546,7 @@ FC: $[1\times1\times1000]$ <span style="color:red">memory; 1000</span> <span sty
   **[(CONV-RELU) $^{*}$ N-POOL?] $^{*}$ M-(FC-RELU) ${ }^{\star}$ K,SOFTMAX** where $N$ is usually up to $\sim 5$, M is large, $0<=k<=2$.
   - but recent advances such as ResNet/GoogLeNet challenge this paradigm
 
-## Lecture 8
+## Lecture 7
 
 ### Content
 
@@ -752,7 +752,6 @@ The drawing below shows a dataset. Each example in the dataset has two inputs fe
   \end{align*}
   $$
   
-
 - Some useful properties:
   - $H$ is always non-negative
   - Chain rule: $H(X, Y)=H(X \mid Y)+H(Y)=H(Y \mid X)+H(X)$
@@ -997,3 +996,487 @@ $$
 - Be careful, what doesn't this capture?
   - We average over points $\mathbf{x}$ from the data distribution.
 
+## Lecture 8
+
+### Content
+
+>TBD
+
+### Today
+
+- Today we will introduce <span style="color:blue">ensembling methods</span> that combine multiple models and can perform better than the individual members.
+  - We've seen many individual models (KNN, linear models, neural networks, decision trees)
+- We will see <span style="color:blue">bagging</span>:
+  - Train models independently on random "resamples" of the training data.
+- And <span style="color:blue">bagging</span>:
+  - Train models sequentially, each time focusing on training examples that the previous ones got wrong.
+- Bagging and boosting serve slightly different purposes. Let's briefly review bias/variance decomposition.
+
+### Bias/Variance Decomposition
+
+- Recall, we treat predictions $y$ at a query $\mathbf{x}$ as a random variable (where the randomness comes from the choice of dataset), $y_{\star}$ is the optimal deterministic prediction, $t$ is a random target sampled from the true conditional $p(t \mid \mathbf{x})$
+$$
+\mathbb{E}\left[(y-t)^{2}\right]=\underbrace{\left(y_{\star}-\mathbb{E}[y]\right)^{2}}_{\text {bias }}+\underbrace{\operatorname{Var}(y)}_{\text {variance }}+\underbrace{\operatorname{Var}(t)}_{\text {Bayes error }}
+$$
+- Bias/variance decomposes the expected loss into three terms:
+  - <span style="color:blue">bias</span>: how wrong the expected prediction is (corresponds to underfitting)
+  - <span style="color:blue">variance</span>: the amount of variability in the predictions (corresponds to overfitting)
+  - Bayes error: the inherent unpredictability of the targets
+- Even though this analysis only applies to squared error, we often loosely use "bias" and "variance" as synonyms for "underfitting" and "overfitting".
+
+#### Another Visualization
+
+- We can visualize this decomposition in <span style="color:blue">output space</span>, where the axes correspond to predictions on the test examples.
+
+- If we have an overly simple model (e.g. KNN with large $k$ ), it might have
+
+  - high bias (because it cannot capture the structure in the data)
+  - low variance (because there's enough data to get stable estimates)
+
+  <img src="images\image-20211108164334246.png" alt="image-20211108164334246"  />
+
+- If you have an overly complex model (e.g. KNN with $k=1$ ), it might have
+
+  - low bias (since it learns all the relevant structure)
+  - high variance (it fits the quirks of the data you happened to sample)
+
+  <img src="images\image-20211108164412888.png" alt="image-20211108164412888"  />
+
+- The following graphic summarizes the previous two slides: 
+
+  <img src="images\image-20211108164504382.png" alt="image-20211108164504382"  />
+
+### Bagging
+
+#### Motivation		
+
+- Suppose we could somehow sample $m$ independent training sets from $p_{\text {sample }}$.
+
+- We could then compute the prediction $y_{i}$ based on each one, and take the average $y=\frac{1}{m} \sum_{i=1}^{m} y_{i}$.
+
+- How does this affect the three terms of the expected loss?
+
+- **Bayes error: unchanged**, since we have no control over it
+
+- **Bias: unchanged**, since the averaged prediction has the same expectation
+  $$
+  \begin{align*}
+  \mathbb{E}[y]=\mathbb{E}\left[\frac{1}{m} \sum_{i=1}^{m} y_{i}\right]=\mathbb{E}\left[y_{i}\right]
+  \end{align*}
+  $$
+
+- **Variance: reduced**, since we're averaging over independent samples
+  $$
+  \begin{align*}
+  \operatorname{Var}[y]=\operatorname{Var}\left[\frac{1}{m} \sum_{i=1}^{m} y_{i}\right]=\frac{1}{m^{2}} \sum_{i=1}^{m} \operatorname{Var}\left[y_{i}\right]=\frac{1}{m} \operatorname{Var}\left[y_{i}\right] .
+  \end{align*}
+  $$
+
+#### The Idea
+
+- In practice, the sampling distribution $p_{\text {sample }}$ is often finite or expensive to sample from.
+- So training separate models on independently sampled datasets is very wasteful of data!
+  - Why not train a single model on the union of all sampled datasets?
+- Solution: given training set $\mathcal{D}$, use the empirical distribution $p_{\mathcal{D}}$ as a proxy for $p_{\text {sample }}$. This is called <span style="color:blue">bootstrap aggregation</span>, or <span style="color:blue">bagging.</span>
+  - Take a single dataset $\mathcal{D}$ with $n$ examples.
+  - Generate $m$ new datasets ("resamples" or "bootstrap samples"), each by sampling $n$ training examples from $\mathcal{D}$, with replacement.
+  - Average the predictions of models trained on each of these datasets.
+- The bootstrap is one of the most important ideas in all of statistics!
+  - Intuition: As $|\mathcal{D}| \rightarrow \infty$, we have $p_{\mathcal{D}} \rightarrow p_{\text {sample }}$.
+
+<img src="images\image-20211108164749693.png" alt="image-20211108164749693"  />
+
+<img src="images\image-20211108164810709.png" alt="image-20211108164810709"  />
+
+##### Effect on Hypothesis Space
+
+- We saw that in case of squared error, bagging does not affect bias.
+
+- But it can change the hypothesis space / inductive bias.
+
+- Illustrative example:
+
+  - $x \sim \mathcal{U}(-3,3), t \sim \mathcal{N}(0,1)$
+
+  - $\mathcal{H}=\{w x \mid w \in\{-1,1\}\}$
+
+  - Sampled datasets \& fitted hypotheses:
+
+    <img src="images\image-20211108164912103.png" alt="image-20211108164912103"  />
+
+  - Ensembled hypotheses (mean over 1000 samples):
+
+    <img src="images\image-20211108164933496.png" alt="image-20211108164933496"  />
+
+    The ensembled hypothesis is not in the original hypothesis space!
+
+- This effect is most pronounced when combining classifiers ...
+
+##### Bagging for Binary Classification
+
+- If our classifiers output real-valued probabilities, $z_{i} \in[0,1]$, then we can average the predictions before thresholding:
+  $$
+  \begin{align*}
+  y_{\text {bagged }}=\mathbb{I}\left(z_{\text {bagged }}>0.5\right)=\mathbb{I}\left(\sum_{i=1}^{m} \frac{z_{i}}{m}>0.5\right)
+  \end{align*}
+  $$
+
+- If our classifiers output binary decisions, $y_{i} \in\{0,1\}$, we can still average the predictions before thresholding:
+  $$
+  \begin{align*}
+  y_{\text {bagged }}=\mathbb{I}\left(\sum_{i=1}^{m} \frac{y_{i}}{m}>0.5\right)
+  \end{align*}
+  $$
+
+This is the same as taking a majority vote.
+- A bagged classifier can be stronger than the average underyling model.
+  - E.g., individual accuracy on "Who Wants to be a Millionaire" is only so-so, but "Ask the Audience" is quite effective.
+
+#### Effect of Correlation
+
+- Problem: the datasets are not independent, so we don't get the $1 / m$ variance reduction.
+
+  - Possible to show that if the sampled predictions have variance $\sigma^{2}$ and correlation $\rho$, then
+    $$
+    \begin{align*}
+    \operatorname{Var}\left(\frac{1}{m} \sum_{i=1}^{m} y_{i}\right)=\frac{1}{m}(1-\rho) \sigma^{2}+\rho \sigma^{2}
+    \end{align*}
+    $$
+
+#### Random Forests
+
+- <span style="color:blue">Random forests</span> $=$ bagged decision trees, with one extra trick to decorrelate the predictions
+  - When choosing each node of the decision tree, choose a random set of $d$ input features, and only consider splits on those features
+- Random forests are probably the best black-box machine learning algorithm - they often work well with no tuning whatsoever.
+  - one of the most widely used algorithms in Kaggle competitions
+
+#### Bagging Summary
+
+- Bagging reduces overfitting by averaging predictions.
+- Used in most competition winners
+  - Even if a single model is great, a small ensemble usually helps.
+- Limitations:
+  - Does not reduce bias in case of squared error.
+  - There is still correlation between classifiers.
+    - Random forest solution: Add more randomness.
+  - Naive mixture (all members weighted equally).
+    - If members are very different (e.g., different algorithms, different data sources, etc.), we can often obtain better results by using a principled approach to weighted ensembling.
+- Boosting, up next, can be viewed as an approach to weighted ensembling that strongly decorrelates ensemble members.
+
+### Boosting
+
+- <span style="color:blue">Boosting</span>
+  - Train classifiers sequentially, each time focusing on training examples that the previous ones got wrong.
+  - The shifting focus strongly decorrelates their predictions.
+- To focus on specific examples, boosting uses a <span style="color:blue">weighted training set</span>.
+
+#### weighted training set
+
+- The misclassification rate $\frac{1}{N} \sum_{n=1}^{N} \mathbb{I}\left[h\left(x^{(n)}\right) \neq t^{(n)}\right]$ weights each training example equally.
+
+- Key idea: we can learn a classifier using different costs (aka weights) for examples.
+
+  - Classifier "tries harder" on examples with higher cost
+
+- Change cost function:
+  $$
+  \begin{align*}
+  \sum_{n=1}^{N} \frac{1}{N} \mathbb{I}\left[h\left(x^{(n)}\right) \neq t^{(n)}\right] \quad \text { becomes } \quad \sum_{n=1}^{N} w^{(n)} \mathbb{I}\left[h\left(x^{(n)}\right) \neq t^{(n)}\right]
+  \end{align*}
+  $$
+
+- Usually require each $w^{(n)}>0$ and $\sum_{n=1}^{N} w^{(n)}=1$
+
+#### AdaBoost (Adaptive Boosting)
+
+- We can now describe the <span style="color:blue">AdaBoost</span> algorithm.
+- Given a base classifier, the key steps of AdaBoost are:
+
+  1. At each iteration, re-weight the training samples by assigning larger weights to samples (i.e., data points) that were classified incorrectly.
+  2. Train a new base classifier based on the re-weighted samples.
+  3. Add it to the ensemble of classifiers with an appropriate weight.
+  4. Repeat the process many times.
+- Requirements for base classifier:
+  - Needs to minimize weighted error.
+  - Ensemble may get very large, so base classifier must be fast. It turns out that any so-called <span style="color:blue">weak learner/classifier</span> suffices.
+- Individually, weak learners may have high bias (underfit). By making each classifier focus on previous mistakes, AdaBoost <span style="color:blue">reduces bias</span>.
+
+#### Weak Learner/Classifier
+
+- (Informal) Weak learner is a learning algorithm that outputs a hypothesis (e.g., a classifier) that performs slightly better than chance, e.g., it predicts the correct label with probability $0.51$ in binary label case.
+- We are interested in weak learners that are computationally efficient.
+  - Decision trees
+  - Even simpler: <span style="color:blue">Decision Stump</span>: A decision tree with a single split
+
+<img src="images\image-20211108165537559.png" alt="image-20211108165537559"  />
+
+These weak classifiers, which are decision stumps, consist of the set of horizontal and vertical half spaces.
+
+<img src="images\image-20211108165604073.png" alt="image-20211108165604073"  />
+
+- A single weak classifier is not capable of making the training error small
+- But if can guarantee that it performs slightly better than chance, i.e., the weighted error of classifier $h$ according to the given weights $\mathbf{w}=\left(w_{1}, \ldots, w_{N}\right)$ is at most $\frac{1}{2}-\gamma$ for some $\gamma>0$, using it with AdaBoost gives us a universal function approximator!
+- Last lecture we used information gain as the splitting criterion. When using decision stumps with AdaBoost we often use a "GINI Impurity", which (roughly speaking) picks the split that directly minimizes error.
+- Now let's see how AdaBoost combines a set of weak classifiers in order to make a better ensemble of classifiers...
+
+#### Notation in this lecture
+
+- Input: Data $\mathcal{D}_{N}=\left\{\mathbf{x}^{(n)}, t^{(n)}\right\}_{n=1}^{N}$ where $t^{(n)} \in\{-1,+1\}$
+  - This is different from previous lectures where we had $t^{(n)} \in\{0,+1\}$
+  - It is for notational convenience, otw equivalent.
+- A classifier or hypothesis $h: \mathbf{x} \rightarrow\{-1,+1\}$
+- 0-1 loss: $\mathbb{I}\left[h\left(x^{(n)}\right) \neq t^{(n)}\right]=\frac{1}{2}\left(1-h\left(x^{(n)}\right) \cdot t^{(n)}\right)$
+
+#### Ada Boost Algorithm
+
+- Input: Data $\mathcal{D}_{N}$, weak classifier WeakLearn (a classification procedure that returns a classifier $h$, e.g. best decision stump, from a set of classifiers $\mathcal{H}$, e.g. all possible decision stumps), number of iterations $T$
+
+- Output: Classifier $H(x)$
+
+- Initialize sample weights: $w^{(n)}=\frac{1}{N}$ for $n=1, \ldots, N$
+
+- For $t=1, \ldots, T$
+
+  - Fit a classifier to weighted data $\left(h_{t} \leftarrow\right.$ WeakLearn $\left.\left(\mathcal{D}_{N}, \mathbf{w}\right)\right)$, e.g.,
+
+  $$
+  \begin{align*}
+  h_{t} \leftarrow \underset{h \in \mathcal{H}}{\operatorname{argmin}} \sum_{n=1}^{N} w^{(n)} \mathbb{I}\left\{h\left(\mathbf{x}^{(n)}\right) \neq t^{(n)}\right\}
+  \end{align*}
+  $$
+
+  - Compute weighted error err $_{t}=\frac{\sum_{n=1}^{N} w^{(n)} \mathbb{I}\left\{h_{t}\left(\mathbf{x}^{(n)}\right) \neq t^{(n)}\right\}}{\sum_{n=1}^{N} w^{(n)}}$
+
+  - Compute classifier coefficient $\alpha_{t}=\frac{1}{2} \log \frac{\sum_{n=1}^{1}-\operatorname{err}_{t}}{\operatorname{err}_{t}}(\in(0, \infty))$
+
+  - Update data weights
+    $$
+    \begin{align*}
+    w^{(n)} \leftarrow w^{(n)} \exp \left(-\alpha_{t} t^{(n)} h_{t}\left(\mathbf{x}^{(n)}\right)\right)\left[\equiv w^{(n)} \exp \left(2 \alpha_{t} \mathbb{I}\left\{h_{t}\left(\mathbf{x}^{(n)}\right) \neq t^{(n)}\right\}\right)\right]
+    \end{align*}
+    $$
+
+- Return $H(\mathbf{x})=\operatorname{sign}\left(\sum_{t=1}^{T} \alpha_{t} h_{t}(\mathbf{x})\right)$
+
+#### Weighting Intuition
+
+- Recall: $H(\mathbf{x})=\operatorname{sign}\left(\sum_{t=1}^{T} \alpha_{t} h_{t}(\mathbf{x})\right)$ where $\alpha_{t}=\frac{1}{2} \log \frac{1-\operatorname{err}_{t}}{\operatorname{err}_{t}}$
+
+  <img src="images\image-20211108165847786.png" alt="image-20211108165847786"  />
+
+- Weak classifiers which get lower weighted error get more weight in the final classifier
+- Also: $w^{(n)} \leftarrow w^{(n)} \exp \left(2 \alpha_{t} \mathbb{I}\left\{h_{t}\left(\mathbf{x}^{(n)}\right) \neq t^{(n)}\right\}\right)$
+  - If $\operatorname{err}_{t} \approx 0, \alpha_{t}$ high so misclassified examples get more attention
+  - If err $_{t} \approx 0.5, \alpha_{t}$ low so misclassified examples are not emphasized
+
+#### AdaBoost Example
+
+- Training data
+
+  <img src="images\image-20211108165926339.png" alt="image-20211108165926339"  />
+
+- Round 1
+
+  <img src="images\image-20211108170003014.png" alt="image-20211108170003014"  />
+
+$$
+\begin{aligned}
+\mathbf{w} &\left.=\left(\frac{1}{10}, \ldots, \frac{1}{10}\right) \Rightarrow \text { Train a classifier (using } \mathbf{w}\right) \Rightarrow \operatorname{err}_{1}=\frac{\sum_{i=1}^{10} w_{i} \mathrm{I}\left\{h_{1}\left(\mathbf{x}^{(i)}\right) \neq t^{(i)}\right\}}{\sum_{i=1}^{N} w_{i}}=\frac{3}{10} \\
+\Rightarrow \alpha_{1} &=\frac{1}{2} \log \frac{1-\operatorname{err}_{1}}{\operatorname{err}_{1}}=\frac{1}{2} \log \left(\frac{1}{0.3}-1\right) \approx 0.42 \Rightarrow H(\mathbf{x})=\operatorname{sign}\left(\alpha_{1} h_{1}(\mathbf{x})\right)
+\end{aligned}
+$$
+
+- Round 2
+
+  <img src="images\image-20211108170042577.png" alt="image-20211108170042577"  />
+
+$$
+\begin{gathered}
+\mathbf{w}=\text { updated weights } \Rightarrow \text { Train a classifier (using } \mathbf{w}) \Rightarrow \operatorname{err}_{2}=\frac{\sum_{i=1}^{10} w_{i} \mathbb{I}\left\{h_{2}\left(\mathbf{x}^{(i)}\right) \neq t^{(i)}\right\}}{\sum_{i=1}^{N} w_{i}}=0.21 \\
+\Rightarrow \alpha_{2}=\frac{1}{2} \log \frac{1-\operatorname{err}_{3}}{\operatorname{err}_{3}}=\frac{1}{2} \log \left(\frac{1}{0.21}-1\right) \approx 0.66 \Rightarrow H(\mathbf{x})=\operatorname{sign}\left(\alpha_{1} h_{1}(\mathbf{x})+\alpha_{2} h_{2}(\mathbf{x})\right)
+\end{gathered}
+$$
+
+- Round 3
+
+  <img src="images\image-20211108170125242.png" alt="image-20211108170125242"  />
+
+$$
+\begin{aligned}
+\mathbf{w} &=\text { updated weights } \Rightarrow \text { Train a classifier (using } \mathbf{w}) \Rightarrow \operatorname{err}_{3}=\frac{\sum_{i=1}^{10} w_{i} \mathbb{I}\left\{h_{3}\left(\mathbf{x}^{(i)}\right) \neq t^{(i)}\right\}}{\sum_{i=1}^{N} w_{i}}=0.14 \\
+\Rightarrow \alpha_{3} &=\frac{1}{2} \log \frac{1-\operatorname{err}_{3}}{\operatorname{err}_{3}}=\frac{1}{2} \log \left(\frac{1}{0.14}-1\right) \approx 0.91 \Rightarrow H(\mathbf{x})=\operatorname{sign}\left(\alpha_{1} h_{1}(\mathbf{x})+\alpha_{2} h_{2}(\mathbf{x})+\alpha_{3} h_{3}(\mathbf{x})\right)
+\end{aligned}
+$$
+
+- Final classifier
+
+  <img src="images\image-20211108170155668.png" alt="image-20211108170155668"  />
+
+#### AdaBoost Algorithm
+
+<img src="images\image-20211108170230902.png" alt="image-20211108170230902"  />
+
+#### AdaBoost Example
+
+<img src="images\image-20211108170254853.png" alt="image-20211108170254853"  />
+
+- Each figure shows the number $m$ of base learners trained so far, the decision of the most recent learner (dashed black), and the boundary of the ensemble (green)
+
+#### AdaBoost Minimizes the Training Error
+
+**Theorem**
+Assume that at each iteration of AdaBoost the WeakLearn returns a hypothesis with error err $t \leq \frac{1}{2}-\gamma$ for all $t=1, \ldots, T$ with $\gamma>0$. The training error of the output hypothesis $H(\mathbf{x})=\operatorname{sign}\left(\sum_{t=1}^{T} \alpha_{t} h_{t}(\mathbf{x})\right)$ is at most
+$$
+\left.L_{N}(H)=\frac{1}{N} \sum_{i=1}^{N} \mathbb{I}\left\{H\left(\mathbf{x}^{(i)}\right) \neq t^{(i)}\right)\right\} \leq \exp \left(-2 \gamma^{2} T\right)
+$$
+- This is under the simplifying assumption that each weak learner is $\gamma$-better than a random predictor.
+- This is called geometric convergence. It is fast!
+
+#### Generalization Error of AdaBoost
+
+- AdaBoost's training error (loss) converges to zero. What about the test error of $H ?$
+- As we add more weak classifiers, the overall classifier $H$ becomes more "complex".
+- We expect more complex classifiers overfit.
+- If one runs AdaBoost long enough, it can in fact overfit.
+
+<img src="images\image-20211108170421073.png" alt="image-20211108170421073"  />
+
+- But often it does not!
+
+- Sometimes the test error decreases even after the training error is zero!
+
+  <img src="images\image-20211108170445853.png" alt="image-20211108170445853"  />
+
+- How does that happen?
+
+- Next, we provide an alternative viewpoint on AdaBoost.
+
+#### Additive Models
+
+Next, we'll now interpret AdaBoost as a way of fitting an additive model.
+- Consider a hypothesis class $\mathcal{H}$ with each $h_{i}: \mathbf{x} \mapsto\{-1,+1\}$ within $\mathcal{H}$, i.e., $h_{i} \in \mathcal{H} .$ These are the "weak learners", and in this context they're also called **bases**.
+
+- An **additive model** with $m$ terms is given by
+  $$
+  
+  H_{m}(x)=\sum_{i=1}^{m} \alpha_{i} h_{i}(\mathbf{x})
+  $$
+
+​		where $\left(\alpha_{1}, \cdots, \alpha_{m}\right) \in \mathbb{R}^{m}$.
+- Observe that we're taking a linear combination of base classifiers $h_{i}(\mathbf{x})$, just like in boosting.
+- Note also the connection to feature maps (or basis expansions) that we saw in linear regression and neural networks!
+
+##### Stagewise Training of Additive Models
+
+A greedy approach to fitting additive models, known as stagewise training:
+1. Initialize $H_{0}(x)=0$
+
+2. For $m=1$ to $T$ :
+
+   - Compute the $m$-th hypothesis $H_{m}=H_{m-1}+\alpha_{m} h_{m}$, i.e. $h_{m}$ and $\alpha_{m}$, assuming previous additive model $H_{m-1}$ is fixed:
+     $$
+     \begin{align*}
+     \left(h_{m}, \alpha_{m}\right) \leftarrow \underset{h \in \mathcal{H}, \alpha}{\operatorname{argmin}} \sum_{i=1}^{N} \mathcal{L}\left(H_{m-1}\left(\mathbf{x}^{(i)}\right)+\alpha h\left(\mathbf{x}^{(i)}\right), t^{(i)}\right)
+     \end{align*}
+     $$
+   - Add it to the additive model	
+     $$
+     \begin{align*}
+     H_{m}=H_{m-1}+\alpha_{m} h_{m}
+     \end{align*}
+     $$
+
+##### Additive Models with Exponential Loss
+
+Consider the exponential loss
+$$
+\mathcal{L}_{\mathrm{E}}(z, t)=\exp (-t z) .
+$$
+We want to see how the stagewise training of additive models can be done.
+
+<img src="images\image-20211108170744951.png" alt="image-20211108170744951"  />
+
+Consider the exponential loss
+$$
+\mathcal{L}_{\mathrm{E}}(z, t)=\exp (-t z)
+$$
+We want to see how the stagewise training of additive models can be done.
+$$
+\begin{aligned}
+\left(h_{m}, \alpha_{m}\right) \leftarrow \underset{h \in \mathcal{H}, \alpha}{\operatorname{argmin}} & \sum_{i=1}^{N} \exp \left(-\left[H_{m-1}\left(\mathbf{x}^{(i)}\right)+\alpha h\left(\mathbf{x}^{(i)}\right)\right] t^{(i)}\right) \\
+&=\sum_{i=1}^{N} \exp \left(-H_{m-1}\left(\mathbf{x}^{(i)}\right) t^{(i)}\right) \exp \left(-\alpha h\left(\mathbf{x}^{(i)}\right) t^{(i)}\right) \\
+&=\sum_{i=1}^{N} w_{i}^{(m)} \exp \left(-\alpha h\left(\mathbf{x}^{(i)}\right) t^{(i)}\right)
+\end{aligned}
+$$
+Here we defined $w_{i}^{(m)} \triangleq \exp \left(-H_{m-1}\left(\mathbf{x}^{(i)}\right) t^{(i)}\right)($ doesn't depend on $h, \alpha)$.
+
+We want to solve the following minimization problem:
+$$
+\begin{align*}
+\left(h_{m}, \alpha_{m}\right) \leftarrow \underset{h \in \mathcal{H}, \alpha}{\operatorname{argmin}} \sum_{i=1}^{N} w_{i}^{(m)} \exp \left(-\alpha h\left(\mathbf{x}^{(i)}\right) t^{(i)}\right) \quad \quad\quad\quad(1)
+\end{align*}
+$$
+
+- Recall
+$$
+w^{(n)} \exp \left(-\alpha_{t} h_{t}\left(\mathbf{x}^{(n)}\right) t^{(n)}\right) \propto w^{(n)} \exp \left(2 \alpha_{t} \mathbb{I}\left\{h_{t}\left(\mathbf{x}^{(n)}\right) \neq t^{(n)}\right\}\right)
+$$
+- Thus, for $h_{m}$, the above minimization is equivalent to:
+$\begin{array}{rlr}h_{m} & \leftarrow \underset{h \in \mathcal{H}}{\operatorname{argmin}} \sum_{i=1}^{N} w_{i}^{(m)} \exp \left(2 \alpha_{t} \mathbb{I}\left\{h_{t}\left(\mathbf{x}^{(n)}\right) \neq t^{(n)}\right\}\right) & \\ & =\underset{h \in \mathcal{H}}{\operatorname{argmin}} \sum_{i=1}^{N} w_{i}^{(m)}\left(\exp \left(2 \alpha_{t} \mathbb{I}\left\{h_{t}\left(\mathbf{x}^{(n)}\right) \neq t^{(n)}\right\}\right)-1\right) & \quad \triangleright\ text { subtract } \sum w_{i}^{(m)} \\ & =\underset{h \in \mathcal{H}}{\operatorname{argmin}} \sum_{i=1}^{N} w_{i}^{(m)} \mathbb{I}\left\{h_{t}\left(\mathbf{x}^{(n)}\right) \neq t^{(n)}\right\} & \triangleright \text { divide by }\left(\exp \left(2 \alpha_{t}\right)-1\right)\end{array}$
+- This means that $h_{m}$ is the minimizer of the weighted $0 / 1$-loss.
+
+- Now that we obtained $h_{m}$, we can plug it into our exponential loss objective (1) and solve for $\alpha_{m}$.
+
+- The derivation is a bit laborious and doesn't provide additional insight, so we skip it.
+
+- We arrive at:
+  $$
+  \begin{align*}
+  \alpha_{m}=\frac{1}{2} \log \left(\frac{1-\operatorname{err}_{m}}{\operatorname{err}_{m}}\right)
+  \end{align*}
+  $$
+
+​		where $\operatorname{err}_{m}$ is the weighted classification error:
+$$
+\begin{align*}
+\operatorname{err}_{m}=\frac{\sum_{i=1}^{N} w_{i}^{(m)} \mathbb{I}\left\{h_{m}\left(\mathbf{x}^{(i)}\right) \neq t^{(i)}\right\}}{\sum_{i=1}^{N} w_{i}^{(m)}}
+\end{align*}
+$$
+We can now find the updated weights for the next iteration:
+$$
+\begin{aligned}
+w_{i}^{(m+1)} &=\exp \left(-H_{m}\left(\mathbf{x}^{(i)}\right) t^{(i)}\right) \\
+&=\exp \left(-\left[H_{m-1}\left(\mathbf{x}^{(i)}\right)+\alpha_{m} h_{m}\left(\mathbf{x}^{(i)}\right)\right] t^{(i)}\right) \\
+&=\exp \left(-H_{m-1}\left(\mathbf{x}^{(i)}\right) t^{(i)}\right) \exp \left(-\alpha_{m} h_{m}\left(\mathbf{x}^{(i)}\right) t^{(i)}\right) \\
+&=w_{i}^{(m)} \exp \left(-\alpha_{m} h_{m}\left(\mathbf{x}^{(i)}\right) t^{(i)}\right)
+\end{aligned}
+$$
+To summarize, we obtain the additive model $H_{m}(x)=\sum_{i=1}^{m} \alpha_{i} h_{i}(\mathbf{x})$ with
+$$
+\begin{aligned}
+&h_{m} \leftarrow \underset{h \in \mathcal{H}}{\operatorname{argmin}} \sum_{i=1}^{N} w_{i}^{(m)} \mathbb{I}\left\{h\left(\mathbf{x}^{(i)}\right) \neq t^{(i)}\right\} \\
+&\alpha=\frac{1}{2} \log \left(\frac{1-\operatorname{err}_{m}}{\operatorname{err}_{m}}\right), \quad \text { where } \operatorname{err}_{m}=\frac{\sum_{i=1}^{N} w_{i}^{(m)} \mathbb{I}\left\{h_{m}\left(\mathbf{x}^{(i)}\right) \neq t^{(i)}\right\}}{\sum_{i=1}^{N} w_{i}^{(m)}} \\
+&w_{i}^{(m+1)}=w_{i}^{(m)} \exp \left(-\alpha_{m} h_{m}\left(\mathbf{x}^{(i)}\right) t^{(i)}\right)
+\end{aligned}
+$$
+We derived the AdaBoost algorithm!
+
+#### Boosting Summary
+
+- Boosting reduces bias by generating an ensemble of weak classifiers.
+- Each classifier is trained to reduce errors of previous ensemble.
+- It is quite resilient to overfitting, though it can overfit.
+
+### Ensembles Recap
+
+- Ensembles combine classifiers to improve performance
+- Boosting
+  - Reduces bias
+  - Increases variance (large ensemble can cause overfitting)
+  - Sequential
+  - High dependency between ensemble elements
+- Bagging
+  - Reduces variance (large ensemble can't cause overfitting)
+  - Bias is not changed (much)
+  - Parallel
+  - Want to minimize correlation between ensemble elements.
