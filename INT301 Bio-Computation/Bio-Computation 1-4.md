@@ -25,9 +25,9 @@
 
 #### Bio-computation
 
-+ **Bio-computation**: a field devoted to tackling complex problems using computational methods modeled after principles encountered in Nature. 
-
++ **Bio-computation**: a field devoted to tackling complex problems using computational methods modeled after principles encountered in **Nature**. 
 + **Goal**: to produce informatics tools with enhanced robustness, scalability, flexibility and reliability
++ A multi-disciplinary field strongly based on Biology, Computer Science,  Informatics, Cognitive Science, and Robotics.
 + The main content is **Artificial Neural Networks**.
 
 #### Artificial intelligence (AI), deep learning, and neural networks
@@ -42,7 +42,14 @@
 
 **DL (Deep Learning) **- subset of ML which makes the computation of multi-layer neural network feasible
 
-#### ANN (Artificial neural networks) : a brief history [ignored]
+#### ANN (Artificial neural networks) : a brief history
+
+- Some early researchers explored the idea of neuron models for AI. When the limits of Classic $A I$ became clear, ANN with new models and algorithms started proving useful.
+- Artificial neural networks (ANNs) was created over 50 years ago when very little was known about how real neurons worked.
+- Since then, neuroscientists have learned a great deal about neural anatomy and physiology, <span style="color:red">but the basic design of ANNs has changed very little.</span> Therefore, <span style="color:red">despite the name neural networks, the design of ANNs has little in common with real neurons.</span>
+- Instead, the emphasis of ANNs moved from biological realism to the desire to learn from data. Consequently, the big advantage of Simple Neural Networks over Classic $A I$ is that they learn from data and <span style="color:red">don't require an expert to provide rules.</span>
+- Today ANNs are part of a broader category of machine learning which includes other mathematical and statistical techniques.
+- Machine learning techniques, including ANNs, look at large bodies of data, extract statistics, and classify the results.
 
 #### Biological Neural Network Approach
 
